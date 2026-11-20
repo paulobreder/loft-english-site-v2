@@ -4,7 +4,7 @@
  * a proprietária deve confirmar que se reconhece neles antes da versão oficial.
  *
  * IMAGENS em src/assets/images/valores/ (enviadas pelo responsável em 20/11/2026).
- * Imagem gerada = "imagem ilustrativa"; foto real autorizada pode substituí-la trocando só o import.
+ * Sem o rótulo "imagem ilustrativa" (pedido do responsável, 20/11/2026). Foto real autorizada pode substituí-la trocando só o import.
  */
 import type { ImageMetadata } from 'astro';
 // 1 e 2: imagens geradas (ilustrativas). 3 e 4: fotos reais da Loft (Instagram), com alunos
@@ -39,7 +39,7 @@ export const valores: Valor[] = [
     ingles: 'Confidence',
     texto: 'Aqui o erro faz parte do caminho. Cada aula é um espaço seguro para arriscar, praticar e ganhar coragem de falar.',
     img: confianca,
-    alt: 'Aluno de camiseta vermelha fala sorrindo para a turma, com a professora ao fundo (imagem ilustrativa)',
+    alt: 'Aluno de camiseta vermelha fala sorrindo para a turma, com a professora ao fundo',
     pos: '55% 35%',
   },
   {
@@ -48,7 +48,7 @@ export const valores: Valor[] = [
     ingles: 'Curiosity',
     texto: 'Perguntar é o primeiro passo. Incentivamos cada aluno a explorar o idioma também por músicas, filmes, jogos e conversas do dia a dia.',
     img: curiosidade,
-    alt: 'Crianças levantam a mão em sala de aula enquanto a professora explica no quadro (imagem ilustrativa)',
+    alt: 'Crianças levantam a mão em sala de aula enquanto a professora explica no quadro',
     pos: '50% 45%',
   },
   {
