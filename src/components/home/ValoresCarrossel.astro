@@ -1,0 +1,429 @@
+---
+/**
+ * "O que faz a Loft ser a Loft" — carrossel de valores (referência: bloco de valores da Overlake).
+ * - Imagem central com as vizinhas aparecendo nas laterais; loop infinito.
+ * - Setas, indicadores, arrastar no celular e setas do teclado.
+ * - Sem rotação automática. Slides fora de foco ficam `inert` (fora do teclado e do leitor de tela).
+ * - Sem JS: mostra o primeiro valor, sem controles.
+ * Conteúdo em src/data/institucional/valores.ts.
+ */
+import { Picture } from 'astro:assets';
+import Icon from '../Icon.astro';
+import { valores, valoresIntro } from '../../data/institucional/valores';
+
+const n = valores.length;
+/** Posição inicial de cada slide em relação ao ativo (0): -1, 0, 1, 2… */
+const relInicial = (i: number) => {
+  const r = ((i % n) + n) % n;
+  return r > n / 2 ? r - n : r;
+};
+---
+
+<section class="section valores" aria-labelledby="valores-title">
+  <div class="container valores__head">
+    <p class="valores__rotulo" data-reveal>{valoresIntro.rotulo}</p>
+    <h2 id="valores-title" class="valores__frase" data-reveal style="--reveal-delay:120ms">{valoresIntro.frase}</h2>
+  </div>
+
+  <div class="carrossel" data-carrossel aria-roledescription="carrossel" aria-label="Valores da Loft English" data-reveal style="--reveal-delay:200ms">
+    <div class="carrossel__trilho">
+      {
+        valores.map((v, i) => {
+          const rel = relInicial(i);
+          return (
+            <div
+              class:list={['valor', `valor--forma-${i % 2}`, rel === 0 && 'is-ativo', Math.abs(rel) >= 2 && 'is-longe']}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${i + 1} de ${n}: ${v.titulo}`}
+              aria-hidden={rel === 0 ? undefined : 'true'}
+              inert={rel === 0 ? undefined : true}
+              data-slide={i}
+              style={`--rel:${rel}`}
+            >
+              <div class="valor__img media-fill">
+                <Picture
+                  src={v.img}
+                  alt={v.alt}
+                  formats={['avif', 'webp']}
+                  fallbackFormat="jpg"
+                  quality={72}
+                  widths={[480, 720, 960, 1280]}
+                  sizes="(min-width: 64rem) 38rem, 74vw"
+                  loading="lazy"
+                  decoding="async"
+                  style={v.pos ? `object-position:${v.pos}` : undefined}
+                />
+              </div>
+              <div class="valor__card">
+                <h3 class="valor__titulo">{v.titulo}</h3>
+                <p class="valor__ingles" lang="en">{v.ingles}</p>
+                <p class="valor__texto">{v.texto}</p>
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+
+    <div class="carrossel__controles" hidden data-controles>
+      <button type="button" class="carrossel__seta carrossel__seta--ant" data-ant aria-label="Valor anterior">
+        <Icon name="chevron-left" size={26} strokeWidth={2.25} />
+      </button>
+      <button type="button" class="carrossel__seta carrossel__seta--prox" data-prox aria-label="Próximo valor">
+        <Icon name="chevron-right" size={26} strokeWidth={2.25} />
+      </button>
+    </div>
+
+    <div class="carrossel__pontos" hidden data-pontos>
+      {
+        valores.map((v, i) => (
+          <button type="button" class="carrossel__ponto" data-ir={i} aria-label={`Mostrar: ${v.titulo}`} aria-current={i === 0 ? 'true' : undefined} />
+        ))
+      }
+    </div>
+
+    <p class="visually-hidden" aria-live="polite" data-anuncio></p>
+  </div>
+</section>
+
+<script>
+  const mod = (a: number, n: number) => ((a % n) + n) % n;
+
+  function iniciar(raiz: HTMLElement) {
+    const slides = [...raiz.querySelectorAll<HTMLElement>('[data-slide]')];
+    const pontos = [...raiz.querySelectorAll<HTMLButtonElement>('[data-ir]')];
+    const anuncio = raiz.querySelector<HTMLElement>('[data-anuncio]');
+    const n = slides.length;
+    if (n < 2) return;
+    let ativo = 0;
+
+    // Posição relativa ao ativo; "empate" (lado oposto, com n par) vai para o lado indicado.
+    const relDe = (i: number, alvo: number, lado: 1 | -1) => {
+      const r = mod(i - alvo, n);
+      if (r * 2 === n) return 2 * lado * (n / 2 > 1 ? 1 : 0.5);
+      return r > n / 2 ? r - n : r;
+    };
+
+    const aplicar = (alvo: number, lado: 1 | -1) => {
+      slides.forEach((s, i) => {
+        const rel = relDe(i, alvo, lado);
+        s.style.setProperty('--rel', String(rel));
+        const eAtivo = rel === 0;
+        s.classList.toggle('is-ativo', eAtivo);
+        s.classList.toggle('is-longe', Math.abs(rel) >= 2);
+        if (eAtivo) {
+          s.removeAttribute('aria-hidden');
+          s.inert = false;
+        } else {
+          s.setAttribute('aria-hidden', 'true');
+          s.inert = true;
+        }
+      });
+      pontos.forEach((p, i) => (i === alvo ? p.setAttribute('aria-current', 'true') : p.removeAttribute('aria-current')));
+    };
+
+    const ir = (alvo: number, lado: 1 | -1) => {
+      alvo = mod(alvo, n);
+      if (alvo === ativo) return;
+      // 1) O slide que vai entrar é posicionado, sem transição, no lado de onde vem.
+      slides.forEach((s, i) => {
+        if (Math.abs(relDe(i, ativo, lado)) >= 2) {
+          s.classList.add('sem-transicao');
+          s.style.setProperty('--rel', String(relDe(i, ativo, lado)));
+        }
+      });
+      void raiz.offsetWidth;
+      slides.forEach((s) => s.classList.remove('sem-transicao'));
+      // 2) Todos andam juntos; o que sai vai para o lado oposto e some.
+      aplicar(alvo, (lado * -1) as 1 | -1);
+      ativo = alvo;
+      if (anuncio) anuncio.textContent = `${ativo + 1} de ${n}: ${slides[ativo].querySelector('h3')?.textContent ?? ''}`;
+    };
+
+    raiz.querySelector('[data-ant]')?.addEventListener('click', () => ir(ativo - 1, -1));
+    raiz.querySelector('[data-prox]')?.addEventListener('click', () => ir(ativo + 1, 1));
+    // Indicadores: anda um passo por vez pelo caminho mais curto (o loop continua coerente).
+    let fila: number | undefined;
+    pontos.forEach((p, i) =>
+      p.addEventListener('click', () => {
+        window.clearTimeout(fila);
+        const passo = () => {
+          const d = mod(i - ativo, n);
+          if (d === 0) return;
+          const lado = d <= n / 2 ? 1 : -1;
+          ir(ativo + lado, lado);
+          if (ativo !== i) fila = window.setTimeout(passo, 260);
+        };
+        passo();
+      }),
+    );
+
+    raiz.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { ir(ativo + 1, 1); e.preventDefault(); }
+      if (e.key === 'ArrowLeft') { ir(ativo - 1, -1); e.preventDefault(); }
+    });
+
+    // Arrastar (toque/caneta): passa se o gesto horizontal for maior que 40px.
+    let x0: number | null = null;
+    let y0 = 0;
+    const trilho = raiz.querySelector<HTMLElement>('.carrossel__trilho')!;
+    trilho.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') { x0 = e.clientX; y0 = e.clientY; } });
+    trilho.addEventListener('pointerup', (e) => {
+      if (x0 === null) return;
+      const dx = e.clientX - x0;
+      const dy = e.clientY - y0;
+      x0 = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) ir(ativo + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
+    });
+    trilho.addEventListener('pointercancel', () => (x0 = null));
+
+    raiz.querySelector<HTMLElement>('[data-controles]')!.hidden = false;
+    raiz.querySelector<HTMLElement>('[data-pontos]')!.hidden = false;
+    slides.forEach((s) => s.classList.add('sem-transicao'));
+    aplicar(0, -1);
+    void raiz.offsetWidth;
+    slides.forEach((s) => s.classList.remove('sem-transicao'));
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-carrossel]').forEach(iniciar);
+</script>
+
+<style>
+  .valores {
+    overflow-x: clip;
+  }
+
+  /* ---------- Abertura ---------- */
+  .valores__head {
+    display: grid;
+    justify-items: center;
+    gap: var(--sp-4);
+    text-align: center;
+    margin-bottom: clamp(var(--sp-8), 2rem + 3vw, var(--sp-10));
+  }
+
+  .valores__rotulo {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--fs-md);
+    color: var(--brand-red);
+  }
+
+  .valores__frase {
+    max-width: 34ch;
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.375rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.18;
+    color: var(--brand-red-deep);
+    text-wrap: balance;
+  }
+
+  /* ---------- Carrossel ---------- */
+  .carrossel {
+    --slide-w: min(74vw, 38rem);
+    --slide-gap: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+    position: relative;
+  }
+
+  .carrossel__trilho {
+    display: grid;
+    touch-action: pan-y;
+  }
+
+  .valor {
+    grid-area: 1 / 1;
+    justify-self: center;
+    width: var(--slide-w);
+    display: grid;
+    transform: translateX(calc(var(--rel) * (100% + var(--slide-gap))));
+    transition:
+      transform 0.75s var(--ease-out),
+      opacity 0.5s ease;
+  }
+
+  .valor.is-longe {
+    opacity: 0;
+  }
+
+  .valor.sem-transicao {
+    transition: none;
+  }
+
+  .valor__img {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--color-surface-deep);
+    transition: border-radius 0.75s var(--ease-out);
+  }
+
+  /* Formas alternadas, como "D" deitado: um lado reto, o outro em arco */
+  .valor--forma-0 .valor__img {
+    border-radius: var(--r-xl) 999px 999px var(--r-xl);
+  }
+
+  .valor--forma-1 .valor__img {
+    border-radius: 999px var(--r-xl) var(--r-xl) 999px;
+  }
+
+  .valor__card {
+    position: relative;
+    justify-self: center;
+    width: min(88%, 34rem);
+    margin-top: -3rem;
+    padding: var(--sp-5) var(--sp-5) var(--sp-6);
+    border-radius: var(--r-lg);
+    background: #fff;
+    box-shadow: var(--shadow-2);
+    text-align: center;
+    transition:
+      opacity 0.4s ease,
+      transform 0.6s var(--ease-out);
+  }
+
+  .valor:not(.is-ativo) .valor__card {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  .valor.is-ativo .valor__card {
+    transition-delay: 0.25s;
+  }
+
+  .valor__titulo {
+    font-size: var(--fs-2xl);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: var(--brand-navy);
+  }
+
+  .valor__ingles {
+    margin-top: var(--sp-1);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 600;
+    color: var(--brand-red);
+  }
+
+  .valor__texto {
+    margin: var(--sp-3) auto 0;
+    max-width: 44ch;
+    color: var(--color-muted);
+    font-size: var(--fs-sm);
+    line-height: 1.65;
+  }
+
+  /* Setas sobre as bordas da imagem central, na altura do meio da foto */
+  .carrossel__controles {
+    position: absolute;
+    top: calc(var(--slide-w) * 0.375);
+    left: 50%;
+    width: calc(var(--slide-w) + 3.5rem);
+    max-width: calc(100vw - 0.5rem);
+    display: flex;
+    justify-content: space-between;
+    translate: -50% -50%;
+    pointer-events: none;
+  }
+
+  .carrossel__seta {
+    pointer-events: auto;
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border: 0;
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 10px 24px -8px rgb(110 10 22 / 0.45);
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      background-color var(--dur-base) var(--ease-out);
+  }
+
+  .carrossel__seta--ant {
+    background: var(--brand-red);
+  }
+
+  .carrossel__seta--prox {
+    background: var(--brand-navy);
+  }
+
+  .carrossel__seta:hover {
+    transform: scale(1.06);
+  }
+
+  .carrossel__seta--ant:hover {
+    background: var(--brand-red-deep);
+  }
+
+  .carrossel__seta:focus-visible {
+    outline: 3px solid var(--brand-red);
+    outline-offset: 3px;
+  }
+
+  .carrossel__pontos {
+    display: flex;
+    justify-content: center;
+    gap: var(--sp-2);
+    margin-top: var(--sp-6);
+  }
+
+  /* Área de toque de 44px, traço visível menor */
+  .carrossel__ponto {
+    position: relative;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .carrossel__ponto::before {
+    content: '';
+    position: absolute;
+    inset: 50% 0.25rem auto;
+    height: 5px;
+    border-radius: 5px;
+    translate: 0 -50%;
+    background: rgb(142 0 18 / 0.18);
+    transition: background-color var(--dur-base) var(--ease-out);
+  }
+
+  .carrossel__ponto[aria-current='true']::before {
+    background: var(--brand-red);
+  }
+
+  .carrossel__ponto:hover::before {
+    background: rgb(142 0 18 / 0.4);
+  }
+
+  .carrossel__ponto:focus-visible {
+    outline: 3px solid var(--brand-red);
+    outline-offset: 2px;
+    border-radius: var(--r-sm, 6px);
+  }
+
+  @media (max-width: 47.99rem) {
+    .carrossel__seta {
+      width: 3rem;
+      height: 3rem;
+    }
+
+    .valor__card {
+      margin-top: -2rem;
+      padding: var(--sp-4) var(--sp-4) var(--sp-5);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .valor,
+    .valor__img,
+    .valor__card {
+      transition: none !important;
+    }
+  }
+</style>

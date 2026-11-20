@@ -1,5 +1,7 @@
 /** Desenhos baseados no conjunto Lucide (licença ISC) — https://lucide.dev */
 export const icons = {
+  'chevron-left': '<path d="m15 18-6-6 6-6"/>',
+  'chevron-right': '<path d="m9 18 6-6-6-6"/>',
   'arrow-right': '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
   'arrow-up-right': '<path d="M7 17 17 7"/><path d="M7 7h10v10"/>',
   'arrow-down': '<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>',

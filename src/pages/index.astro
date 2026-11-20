@@ -11,6 +11,7 @@ import AudienceCard from '../components/AudienceCard.astro';
 import Faq from '../components/Faq.astro';
 import CtaFinal from '../components/home/CtaFinal.astro';
 import FatosLoft from '../components/home/FatosLoft.astro';
+import ValoresCarrossel from '../components/home/ValoresCarrossel.astro';
 import Icon from '../components/Icon.astro';
 import { courses } from '../data/courses';
 import { faq } from '../data/faq';
@@ -80,6 +81,8 @@ const steps = [
       <p class="statement__slogan" lang="en" data-reveal style="--reveal-delay:420ms">{site.slogan}</p>
     </div>
   </section>
+
+  <ValoresCarrossel />
 
   <PorQueIngles />
 
