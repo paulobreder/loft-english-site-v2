@@ -1,43 +1,79 @@
 ---
 /**
- * "A Loft em poucas palavras" — inspirado no bloco de números da referência,
- * mas SOMENTE com fatos confirmados (nada de números inventados).
+ * "Como a Loft ajuda você a avançar" — pontos fortes da escola, com o búfalo no centro.
+ * Só pontos confirmados: inglês americano e metodologia/material próprios (áudio da proprietária,
+ * ver 06_CONTEUDOS_PLANEJADOS/FEEDBACK-PROPRIETARIA-2026-11.md), aulas em turma e atividades
+ * (fotos autorizadas da seção Vida na Loft) e a cidade. Nada de números, prêmios ou promessas
+ * de resultado até a escola enviar os materiais.
  */
 import Icon from '../Icon.astro';
 import type { IconName } from '../icons';
 import Mascote from '../Mascote.astro';
 import { site } from '../../config/site';
 
-const fatos: { destaque: string; texto: string; icon: IconName; tom: string }[] = [
-  { destaque: '3 fases', texto: 'Kids, Teens e Adults: cursos para crianças, adolescentes e adultos.', icon: 'users', tom: 'var(--brand-red)' },
-  { destaque: 'American English', texto: 'O inglês americano é a referência das aulas.', icon: 'messages-square', tom: 'var(--brand-navy)' },
-  { destaque: site.city, texto: `Uma escola de inglês do ${site.stateName}.`, icon: 'map-pin', tom: 'var(--brand-red-deep)' },
-  { destaque: 'Opening the world', texto: 'A assinatura da marca: o inglês como porta para o mundo.', icon: 'globe', tom: 'var(--brand-red)' },
+interface Ponto {
+  destaque: string;
+  texto: string;
+  icon: IconName;
+  tom: string;
+  lang?: 'en';
+}
+
+const pontos: Ponto[] = [
+  {
+    destaque: 'American English',
+    texto: 'O inglês americano é a referência das aulas: o mesmo de muitos filmes, séries e músicas que você já conhece.',
+    icon: 'messages-square',
+    tom: 'var(--brand-red)',
+    lang: 'en',
+  },
+  {
+    destaque: 'Método próprio',
+    texto: 'A Loft English trabalha com metodologia e material próprios em suas aulas.',
+    icon: 'book-open',
+    tom: 'var(--brand-navy)',
+  },
+  {
+    destaque: 'Aprender junto',
+    texto: 'Aulas em turma e atividades além do livro para praticar o inglês com outras pessoas.',
+    icon: 'users',
+    tom: 'var(--brand-red-deep)',
+  },
+  {
+    destaque: 'Na sua cidade',
+    texto: `Estude inglês sem sair de ${site.city}, no ${site.stateName}.`,
+    icon: 'map-pin',
+    tom: 'var(--brand-red)',
+  },
 ];
 ---
 
 <section class="section fatos" aria-labelledby="fatos-title">
-  <div class="container fatos__inner">
-    <div class="fatos__conteudo">
-      <h2 id="fatos-title" class="fatos__titulo">A Loft English em poucas palavras</h2>
+  <div class="container">
+    <h2 id="fatos-title" class="fatos__titulo">Como a Loft ajuda você a avançar</h2>
+
+    <div class="fatos__hub">
+      <div class="fatos__mascote">
+        <span class="fatos__orbita" aria-hidden="true"></span>
+        <Mascote variante="circulo" largura={420} />
+        <span class="fatos__balao" aria-hidden="true" lang="en">Let’s go!</span>
+      </div>
+
       <ul class="fatos__lista">
         {
-          fatos.map((f) => (
+          pontos.map((p) => (
             <li class="fato">
-              <span class="fato__icon" style={`background:${f.tom}`}>
-                <Icon name={f.icon} size={20} />
+              <span class="fato__icon" style={`background:${p.tom}`}>
+                <Icon name={p.icon} size={20} />
               </span>
               <div>
-                <p class="fato__destaque" lang={f.destaque === 'American English' || f.destaque === 'Opening the world' ? 'en' : undefined}>{f.destaque}</p>
-                <p class="fato__texto">{f.texto}</p>
+                <h3 class="fato__destaque" lang={p.lang}>{p.destaque}</h3>
+                <p class="fato__texto">{p.texto}</p>
               </div>
             </li>
           ))
         }
       </ul>
-    </div>
-    <div class="fatos__mascote">
-      <Mascote variante="circulo" largura={340} />
     </div>
   </div>
 </section>
@@ -45,23 +81,103 @@ const fatos: { destaque: string; texto: string; icon: IconName; tom: string }[] 
 <style>
   .fatos {
     background: var(--color-surface);
-  }
-
-  .fatos__inner {
-    display: grid;
-    gap: var(--sp-8);
-    align-items: center;
+    overflow-x: clip;
   }
 
   .fatos__titulo {
-    font-size: var(--fs-xl);
-    font-weight: 700;
+    font-size: var(--fs-2xl);
+    font-weight: 800;
+    letter-spacing: -0.03em;
     color: var(--brand-red-deep);
-    padding-bottom: var(--sp-5);
-    margin-bottom: var(--sp-7);
-    border-bottom: 2px dashed rgb(142 0 18 / 0.25);
+    text-align: center;
+    text-wrap: balance;
+    margin-bottom: clamp(var(--sp-7), 2rem + 2vw, var(--sp-9));
   }
 
+  .fatos__hub {
+    position: relative;
+    display: grid;
+    gap: var(--sp-8);
+  }
+
+  /* ---------- Mascote em destaque ---------- */
+  .fatos__mascote {
+    position: relative;
+    justify-self: center;
+    width: min(78%, 22rem);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+  }
+
+  .fatos__mascote :global(.mascote) {
+    position: relative;
+    width: 100%;
+    filter: drop-shadow(0 26px 30px rgb(110 10 22 / 0.28));
+  }
+
+  /* Anel tracejado em volta do círculo: destaca o búfalo sem pesar */
+  .fatos__orbita {
+    position: absolute;
+    inset: -6%;
+    border: 2px dashed rgb(196 0 24 / 0.32);
+    border-radius: 50%;
+  }
+
+  .fatos__orbita::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -0.4rem;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    background: var(--brand-red);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .fatos__orbita {
+      animation: orbita 40s linear infinite;
+    }
+  }
+
+  @keyframes orbita {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .fatos__balao {
+    position: absolute;
+    top: 2%;
+    right: -10%;
+    z-index: 1;
+    padding: 0.5rem 1rem;
+    border-radius: var(--r-pill);
+    background: #fff;
+    color: var(--brand-red);
+    font-family: var(--font-display);
+    font-size: var(--fs-md);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    box-shadow: 0 10px 24px rgb(110 10 22 / 0.16);
+    rotate: 6deg;
+  }
+
+  .fatos__balao::after {
+    content: '';
+    position: absolute;
+    left: 18%;
+    bottom: -0.45rem;
+    width: 0.9rem;
+    height: 0.9rem;
+    background: #fff;
+    rotate: 45deg;
+    border-radius: 2px;
+  }
+
+  /* ---------- Pontos fortes ---------- */
   .fatos__lista {
     list-style: none;
     display: grid;
@@ -80,14 +196,14 @@ const fatos: { destaque: string; texto: string; icon: IconName; tom: string }[] 
     place-items: center;
     width: 2.75rem;
     height: 2.75rem;
-    margin-top: 0.5rem;
+    margin-top: 0.25rem;
     border-radius: 50%;
     color: #fff;
   }
 
   .fato__destaque {
     font-family: var(--font-display);
-    font-size: clamp(1.875rem, 1.3rem + 2.2vw, 3rem);
+    font-size: clamp(1.625rem, 1.2rem + 1.6vw, 2.5rem);
     font-weight: 800;
     letter-spacing: -0.035em;
     line-height: 1.05;
@@ -97,12 +213,7 @@ const fatos: { destaque: string; texto: string; icon: IconName; tom: string }[] 
   .fato__texto {
     margin-top: var(--sp-2);
     color: var(--color-muted);
-    max-width: 30ch;
-  }
-
-  .fatos__mascote {
-    justify-self: center;
-    width: min(70%, 20rem);
+    max-width: 32ch;
   }
 
   @media (min-width: 48rem) {
@@ -111,14 +222,39 @@ const fatos: { destaque: string; texto: string; icon: IconName; tom: string }[] 
     }
   }
 
+  /* Desktop: búfalo no centro, dois pontos de cada lado */
   @media (min-width: 64rem) {
-    .fatos__inner {
-      grid-template-columns: 1fr minmax(16rem, 22rem);
-      gap: var(--sp-10);
+    .fatos__hub {
+      align-items: center;
+    }
+
+    .fatos__lista {
+      grid-template-columns: minmax(0, 1fr) 25rem minmax(0, 1fr);
+      gap: var(--sp-9) var(--sp-6);
+      grid-row: 1;
+      grid-column: 1;
+    }
+
+    .fato:nth-child(odd) {
+      grid-column: 1;
+    }
+
+    .fato:nth-child(even) {
+      grid-column: 3;
+    }
+
+    .fato:nth-child(-n + 2) {
+      grid-row: 1;
+    }
+
+    .fato:nth-child(n + 3) {
+      grid-row: 2;
     }
 
     .fatos__mascote {
-      width: 100%;
+      grid-row: 1;
+      grid-column: 1;
+      width: 25rem;
     }
   }
 </style>

@@ -14,7 +14,7 @@ import FatosLoft from '../components/home/FatosLoft.astro';
 import Icon from '../components/Icon.astro';
 import { courses } from '../data/courses';
 import { faq } from '../data/faq';
-import { primaryContact } from '../config/site';
+import { primaryContact, site } from '../config/site';
 
 const cta = primaryContact();
 
@@ -71,6 +71,7 @@ const steps = [
         Inglês de verdade, <span>para a vida.</span>
       </h2>
       <p class="statement__sub">Fale inglês com confiança.</p>
+      <p class="statement__slogan" lang="en">{site.slogan}</p>
     </div>
   </section>
 
@@ -242,7 +243,37 @@ const steps = [
     translate: -50% 0;
   }
 
+  /* Assinatura da marca (saiu do bloco de pontos fortes) */
+  .statement__slogan {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-4);
+    margin-top: var(--sp-3);
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: var(--fs-lg);
+    font-style: italic;
+    font-weight: 600;
+  }
+
+  .statement__slogan::before,
+  .statement__slogan::after {
+    content: '';
+    width: clamp(1.5rem, 4vw, 3rem);
+    height: 1px;
+    background: rgb(255 255 255 / 0.6);
+  }
+
   @media (max-width: 40rem) {
+    .statement__slogan {
+      font-size: var(--fs-md);
+    }
+
+    .statement__slogan::before,
+    .statement__slogan::after {
+      display: none;
+    }
+
     .statement::before {
       width: 30%;
       height: 18%;
