@@ -75,12 +75,13 @@ Atende ao feedback da proprietária (`06_CONTEUDOS_PLANEJADOS/FEEDBACK-PROPRIETA
 | Barra superior | Faixa vermelha com "inglês americano" e Instagram |
 | Cursos | Cards com rodapé colorido (vermelho, vermelho profundo, azul) |
 | Sobre nós | Colagem: foto da turma + mapa com faixa "São Gabriel da Palha" + mascote; pilar "Inglês americano" |
-| Em poucas palavras | Fatos confirmados em destaque (sem números inventados) + búfalo no círculo |
-| Manifesto | Faixa listrada vermelha com cantão de estrelas |
-| Por que aprender inglês | Cards com imagem de topo em arco, ritmo desalinhado |
+| Pontos fortes | "Como a Loft ajuda você a avançar": American English, método próprio, aprender junto, na sua cidade, com o búfalo maior no centro |
+| Manifesto | Faixa listrada vermelha com cantão de estrelas e o slogan *opening the world for you* |
+| Por que aprender inglês | Cards com imagem de topo em arco (1,1:1), ritmo desalinhado; imagens de apoio provisórias (abaixo) |
 | Chamada final | Foto da aula com sobreposição vermelha, 3 botões coloridos e mascote |
 
-Imagens: nenhuma removida; a de Londres foi reaproveitada em "Por que aprender inglês". **A imagem dos EUA veio do Pinterest — confirmar licença ou substituir antes da publicação oficial.** Referências da Overlake em `03_REFERENCIAS_DESIGN/OVERLAKE-REFERENCIA-V2/` (só inspiração, fora do repositório público).
+Imagens: a de Londres saiu do site em 20/11 (substituída a pedido do responsável), mas continua em `04_ASSETS_APROVADOS/` e `src/assets/images/`.
+**Imagens de apoio PROVISÓRIAS** em "Por que aprender inglês" (geradas pelo responsável, só para apresentar à proprietária; trocar depois): `src/assets/images/apoio/estudos-universidade.webp`, `carreira-aluno-estudando.webp`, `mundo-musica-aviao.webp` (cópias em `04_ASSETS_APROVADOS/v2-apoio-provisorio-*`). A de carreira mostra capas "Loft English — General English / Conversation" criadas pela IA: **não são livros reais da escola** — substituir pelas capas verdadeiras quando chegarem. **A imagem dos EUA veio do Pinterest — confirmar licença ou substituir antes da publicação oficial.** Referências da Overlake em `03_REFERENCIAS_DESIGN/OVERLAKE-REFERENCIA-V2/` (só inspiração, fora do repositório público).
 
 ## Novos recursos inspirados em benchmarking (v0.4)
 Análise da landing page da Cultura Inglesa (17/11/2026). Aproveitados apenas **padrões de UX**, sem copiar textos, marca nem números.
