@@ -1,0 +1,63 @@
+---
+import BuffaloMark from './BuffaloMark.astro';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+}
+const { eyebrow, title, lead } = Astro.props;
+---
+
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="page-hero__frame">
+    <BuffaloMark class="page-hero__mark" color="currentColor" />
+    <div class="page-hero__inner">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1 id="page-title">{title}</h1>
+      {lead && <p class="lead">{lead}</p>}
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    padding: 0 var(--frame-inset);
+  }
+
+  .page-hero__frame {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--color-surface-alt);
+    border-radius: var(--r-frame);
+    padding: clamp(3rem, 2rem + 5vw, 6.5rem) clamp(1.25rem, 0.5rem + 3.4vw, 4.5rem);
+  }
+
+  .page-hero__frame :global(.page-hero__mark) {
+    position: absolute;
+    right: -4%;
+    bottom: -14%;
+    width: min(46%, 30rem);
+    height: auto;
+    color: rgb(196 0 24 / 0.06);
+    z-index: -1;
+  }
+
+  .page-hero__inner {
+    max-width: var(--container);
+    margin-inline: auto;
+    display: grid;
+    gap: var(--sp-5);
+    justify-items: start;
+  }
+
+  .page-hero h1 {
+    font-size: var(--fs-3xl);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.04;
+    max-width: 18ch;
+  }
+</style>

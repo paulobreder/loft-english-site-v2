@@ -1,0 +1,382 @@
+---
+import { url } from '../../lib/url';
+/**
+ * Hero editorial — reinterpretação da composição SpeakEasy (referência de layout apenas):
+ * moldura gelo de cantos generosos, texto à esquerda, retrato à direita com recorte
+ * de canto, apoio inferior com imagem menor dos EUA (inglês americano) + cartão de fatos verificados.
+ */
+import { Picture } from 'astro:assets';
+import Button from '../Button.astro';
+import Icon from '../Icon.astro';
+import heroImg from '../../assets/images/hero-estudante-loft.png';
+import usaImg from '../../assets/images/apoio-eua-nova-york.webp';
+import { site, contact, primaryContact } from '../../config/site';
+
+const cta = primaryContact();
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__frame">
+    <div class="hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow">Escola de inglês em {site.city}</p>
+        <h1 id="hero-title">Inglês para a vida, <span class="hero__accent">em cada fase.</span></h1>
+        <p class="lead">
+          Conheça a Loft English e os caminhos de aprendizado para crianças, adolescentes e adultos em {site.city}, {site.stateName}.
+        </p>
+        <div class="hero__actions">
+          <Button href={url('/cursos/')} icon="arrow-right" size="lg">Conheça os cursos</Button>
+          <Button
+            href={cta.href}
+            variant="secondary"
+            external
+            icon={cta.channel === 'whatsapp' ? 'whatsapp' : 'instagram'}
+            iconPosition="start"
+            size="lg"
+          >
+            {cta.label}
+          </Button>
+        </div>
+      </div>
+
+      <figure class="hero__portrait media-fill">
+        <Picture
+          src={heroImg}
+          formats={['avif', 'webp']}
+          fallbackFormat="jpg"
+          quality={70}
+          widths={[420, 640, 860, 1024]}
+          sizes="(min-width: 64rem) 38vw, (min-width: 40rem) 70vw, 92vw"
+          alt="Estudante sorrindo ao ar livre, com mochila e apostila da Loft English nos braços (imagem ilustrativa)"
+          loading="eager"
+          fetchpriority="high"
+          class="hero__portrait-img"
+        />
+        <span class="hero__chip">Kids · Teens · Adults</span>
+        <div class="hero__notch">
+          <a class="hero__notch-btn" href={url('/cursos/')} aria-label="Ver todos os cursos">
+            <Icon name="arrow-up-right" size={24} />
+          </a>
+        </div>
+      </figure>
+
+      <div class="hero__support">
+        <figure class="hero__london media-fill">
+          <Picture
+            src={usaImg}
+            formats={['avif', 'webp']}
+            fallbackFormat="jpg"
+            quality={70}
+            widths={[320, 480, 720]}
+            sizes="(min-width: 64rem) 18vw, (min-width: 40rem) 40vw, 92vw"
+            alt="Bandeira dos Estados Unidos tremulando sobre os prédios de Nova York (imagem ilustrativa)"
+            loading="eager"
+            fetchpriority="low"
+            class="hero__london-img"
+          />
+          <figcaption lang="en">{site.slogan}</figcaption>
+        </figure>
+
+        <div class="hero__facts">
+          <ul>
+            <li>
+              <span class="hero__fact-icon"><Icon name="users" size={18} /></span>
+              <span><strong>Kids, Teens e Adults</strong> Crianças, adolescentes e adultos</span>
+            </li>
+            <li>
+              <span class="hero__fact-icon"><Icon name="map-pin" size={18} /></span>
+              <span><strong>{site.city}</strong> {site.stateName}</span>
+            </li>
+            <li>
+              <span class="hero__fact-icon"><Icon name="instagram" size={18} /></span>
+              <span>
+                <strong>{contact.instagramHandle}</strong>
+                <a href={contact.instagramUrl} target="_blank" rel="noopener noreferrer">
+                  Perfil oficial no Instagram<span class="visually-hidden"> (abre em nova aba)</span>
+                </a>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding: var(--frame-inset);
+    padding-top: 0;
+  }
+
+  .hero__frame {
+    --notch: 5.5rem;
+    --notch-r: 1.5rem;
+    background: var(--color-surface-alt);
+    border-radius: var(--r-frame);
+    padding: clamp(2rem, 1rem + 4vw, 4.5rem) clamp(1.25rem, 0.5rem + 3.4vw, 4.5rem);
+  }
+
+  .hero__grid {
+    max-width: var(--container);
+    margin-inline: auto;
+    display: grid;
+    gap: var(--sp-7);
+    grid-template-areas:
+      'copy'
+      'portrait'
+      'support';
+  }
+
+  /* ---------- Texto ---------- */
+  .hero__copy {
+    grid-area: copy;
+    display: grid;
+    gap: var(--sp-5);
+    align-content: center;
+  }
+
+  .hero h1 {
+    font-size: var(--fs-3xl);
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    max-width: 13ch;
+  }
+
+  .hero__accent {
+    position: relative;
+    color: var(--brand-red);
+    white-space: nowrap;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    margin-top: var(--sp-2);
+  }
+
+  /* ---------- Retrato com recorte de canto ---------- */
+  .hero__portrait {
+    grid-area: portrait;
+    position: relative;
+    margin: 0;
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    background: #9cc0e6;
+  }
+
+  .hero__portrait :global(.hero__portrait-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 68%;
+  }
+
+  .hero__chip {
+    position: absolute;
+    left: var(--sp-4);
+    top: var(--sp-4);
+    padding: 0.5rem 0.875rem;
+    border-radius: var(--r-pill);
+    background: rgb(255 255 255 / 0.92);
+    color: var(--color-ink);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    box-shadow: var(--shadow-1);
+  }
+
+  .hero__notch {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: var(--notch);
+    height: var(--notch);
+    display: grid;
+    place-items: end;
+    background: var(--color-surface-alt);
+    border-top-left-radius: var(--notch-r);
+    padding: 0.75rem 0 0 0.75rem;
+  }
+
+  .hero__notch::before,
+  .hero__notch::after {
+    content: '';
+    position: absolute;
+    width: var(--notch-r);
+    height: var(--notch-r);
+    background: radial-gradient(
+      circle at 0 0,
+      transparent calc(var(--notch-r) - 0.5px),
+      var(--color-surface-alt) var(--notch-r)
+    );
+  }
+
+  .hero__notch::before {
+    right: 0;
+    bottom: 100%;
+  }
+
+  .hero__notch::after {
+    right: 100%;
+    bottom: 0;
+  }
+
+  .hero__notch-btn {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--brand-red);
+    color: #fff;
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+
+  .hero__notch-btn:hover {
+    background: var(--brand-red-deep);
+  }
+
+  .hero__notch-btn:hover :global(svg) {
+    transform: translate(2px, -2px);
+  }
+
+  .hero__notch-btn :global(svg) {
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  /* ---------- Apoio: EUA + fatos ---------- */
+  .hero__support {
+    grid-area: support;
+    display: grid;
+    gap: var(--sp-4);
+  }
+
+  .hero__london {
+    position: relative;
+    margin: 0;
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    background: #9cc0e6;
+  }
+
+  .hero__london :global(.hero__london-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Enquadra a bandeira dos EUA com o horizonte de Nova York logo abaixo */
+    object-position: 45% 26%;
+  }
+
+  .hero__london figcaption {
+    position: absolute;
+    left: var(--sp-3);
+    bottom: var(--sp-3);
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--r-pill);
+    background: rgb(142 0 18 / 0.9);
+    color: #fff;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 600;
+    font-size: var(--fs-xs);
+  }
+
+  .hero__facts {
+    background: var(--color-surface);
+    border-radius: var(--r-lg);
+    padding: var(--sp-5);
+    box-shadow: var(--shadow-1);
+    display: grid;
+    align-content: center;
+  }
+
+  .hero__facts ul {
+    list-style: none;
+    display: grid;
+    gap: var(--sp-4);
+  }
+
+  .hero__facts li {
+    display: flex;
+    gap: var(--sp-3);
+    align-items: flex-start;
+    font-size: var(--fs-sm);
+    color: var(--color-muted);
+    line-height: 1.45;
+  }
+
+  .hero__facts strong {
+    display: block;
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+
+  .hero__facts a {
+    display: inline-block;
+    padding-block: 3px;
+    color: var(--color-muted);
+    text-decoration: underline;
+    text-decoration-color: var(--color-line-strong);
+  }
+
+  .hero__facts a:hover {
+    color: var(--brand-red);
+    text-decoration-color: currentColor;
+  }
+
+  .hero__fact-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: var(--color-surface-alt);
+    color: var(--brand-red);
+  }
+
+  @media (max-width: 29.99rem) {
+    .hero__actions > :global(.btn) {
+      flex: 1 1 100%;
+    }
+  }
+
+  @media (min-width: 40rem) {
+    .hero__support {
+      grid-template-columns: 1fr 1.15fr;
+    }
+
+    .hero__london {
+      aspect-ratio: auto;
+      min-height: 12rem;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      grid-template-areas:
+        'copy portrait'
+        'support portrait';
+      column-gap: clamp(2.5rem, 1rem + 3vw, 4.5rem);
+      row-gap: var(--sp-8);
+    }
+
+    .hero__portrait {
+      aspect-ratio: auto;
+      min-height: 36rem;
+      height: 100%;
+    }
+
+    .hero__frame {
+      --notch: 6.25rem;
+    }
+  }
+</style>

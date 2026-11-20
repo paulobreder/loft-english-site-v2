@@ -1,0 +1,100 @@
+---
+import { url, routePath } from '../lib/url';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import StickyContact from '../components/StickyContact.astro';
+import { site, contact, isProductionSite } from '../config/site';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Força noindex (ex.: página ainda em revisão). */
+  noindex?: boolean;
+  ogImage?: string;
+  /** Mostrar a barra de contato fixa no celular (padrão: sim). */
+  stickyContact?: boolean;
+}
+
+const { title, description, noindex = false, ogImage = url('/og-image.jpg'), stickyContact = true } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImageUrl = new URL(ogImage, Astro.site);
+const robots = !isProductionSite || noindex ? 'noindex, nofollow' : 'index, follow';
+
+/**
+ * Dados estruturados: SOMENTE campos confirmados.
+ * Endereço de rua, telefone, horários, preços e avaliações entram apenas
+ * quando preenchidos em src/config/site.ts.
+ */
+const address: Record<string, string> = {
+  '@type': 'PostalAddress',
+  addressLocality: site.city,
+  addressRegion: site.state,
+  addressCountry: site.country,
+};
+if (contact.addressLine) address.streetAddress = contact.addressLine;
+if (contact.zip) address.postalCode = contact.zip;
+
+const org: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'EducationalOrganization',
+  name: site.name,
+  slogan: site.slogan,
+  url: new URL(url('/'), Astro.site).href,
+  logo: new URL(url('/apple-touch-icon.png'), Astro.site).href,
+  sameAs: [contact.instagramUrl],
+  address,
+};
+if (contact.phoneDisplay) org.telephone = contact.phoneDisplay;
+if (contact.email) org.email = contact.email;
+
+const isHome = routePath(Astro.url.pathname) === '/';
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={canonical.href} />
+    <meta name="theme-color" content="#ffffff" />
+
+    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+    <link rel="icon" href={url('/favicon-32.png')} type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
+    <link rel="sitemap" href={url('/sitemap-index.xml')} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={ogImageUrl.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Loft English — Inglês para a vida, em cada fase." />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {isHome && <script type="application/ld+json" set:html={JSON.stringify(org)} />}
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <Header />
+    <main id="conteudo" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    {stickyContact && <StickyContact />}
+  </body>
+</html>
+
+<style>
+  main:focus {
+    outline: none;
+  }
+</style>

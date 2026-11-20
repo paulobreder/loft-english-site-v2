@@ -1,0 +1,124 @@
+---
+/**
+ * "A Loft em poucas palavras" — inspirado no bloco de números da referência,
+ * mas SOMENTE com fatos confirmados (nada de números inventados).
+ */
+import Icon from '../Icon.astro';
+import type { IconName } from '../icons';
+import Mascote from '../Mascote.astro';
+import { site } from '../../config/site';
+
+const fatos: { destaque: string; texto: string; icon: IconName; tom: string }[] = [
+  { destaque: '3 fases', texto: 'Kids, Teens e Adults: cursos para crianças, adolescentes e adultos.', icon: 'users', tom: 'var(--brand-red)' },
+  { destaque: 'American English', texto: 'O inglês americano é a referência das aulas.', icon: 'messages-square', tom: 'var(--brand-navy)' },
+  { destaque: site.city, texto: `Uma escola de inglês do ${site.stateName}.`, icon: 'map-pin', tom: 'var(--brand-red-deep)' },
+  { destaque: 'Opening the world', texto: 'A assinatura da marca: o inglês como porta para o mundo.', icon: 'globe', tom: 'var(--brand-red)' },
+];
+---
+
+<section class="section fatos" aria-labelledby="fatos-title">
+  <div class="container fatos__inner">
+    <div class="fatos__conteudo">
+      <h2 id="fatos-title" class="fatos__titulo">A Loft English em poucas palavras</h2>
+      <ul class="fatos__lista">
+        {
+          fatos.map((f) => (
+            <li class="fato">
+              <span class="fato__icon" style={`background:${f.tom}`}>
+                <Icon name={f.icon} size={20} />
+              </span>
+              <div>
+                <p class="fato__destaque" lang={f.destaque === 'American English' || f.destaque === 'Opening the world' ? 'en' : undefined}>{f.destaque}</p>
+                <p class="fato__texto">{f.texto}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div class="fatos__mascote">
+      <Mascote variante="circulo" largura={340} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .fatos {
+    background: var(--color-surface);
+  }
+
+  .fatos__inner {
+    display: grid;
+    gap: var(--sp-8);
+    align-items: center;
+  }
+
+  .fatos__titulo {
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    color: var(--brand-red-deep);
+    padding-bottom: var(--sp-5);
+    margin-bottom: var(--sp-7);
+    border-bottom: 2px dashed rgb(142 0 18 / 0.25);
+  }
+
+  .fatos__lista {
+    list-style: none;
+    display: grid;
+    gap: var(--sp-7) var(--sp-8);
+  }
+
+  .fato {
+    display: flex;
+    gap: var(--sp-4);
+    align-items: flex-start;
+  }
+
+  .fato__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-top: 0.5rem;
+    border-radius: 50%;
+    color: #fff;
+  }
+
+  .fato__destaque {
+    font-family: var(--font-display);
+    font-size: clamp(1.875rem, 1.3rem + 2.2vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    color: var(--brand-navy);
+  }
+
+  .fato__texto {
+    margin-top: var(--sp-2);
+    color: var(--color-muted);
+    max-width: 30ch;
+  }
+
+  .fatos__mascote {
+    justify-self: center;
+    width: min(70%, 20rem);
+  }
+
+  @media (min-width: 48rem) {
+    .fatos__lista {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .fatos__inner {
+      grid-template-columns: 1fr minmax(16rem, 22rem);
+      gap: var(--sp-10);
+    }
+
+    .fatos__mascote {
+      width: 100%;
+    }
+  }
+</style>

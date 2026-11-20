@@ -1,0 +1,145 @@
+---
+/**
+ * Barra de contato fixa — só no celular/tablet (< 64rem).
+ * Aparece depois que a primeira dobra sai da tela e se esconde quando a faixa de contato
+ * ou o rodapé ficam visíveis (para nunca cobrir conteúdo útil). Respeita a área segura do iPhone.
+ */
+import Icon from './Icon.astro';
+import { primaryContact } from '../config/site';
+
+const cta = primaryContact();
+---
+
+<div class="sticky-contact" data-sticky-contact aria-hidden="true" inert>
+  <p class="sticky-contact__text">
+    <strong>Dúvidas sobre os cursos?</strong>
+    <span>Fale com a Loft English</span>
+  </p>
+  <a class="sticky-contact__btn" href={cta.href} target="_blank" rel="noopener noreferrer">
+    <Icon name={cta.channel === 'whatsapp' ? 'whatsapp' : 'instagram'} size={18} />
+    <span>{cta.shortLabel}</span>
+    <span class="visually-hidden"> — {cta.label} (abre em nova aba)</span>
+  </a>
+</div>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-sticky-contact]');
+  if (bar) {
+    const mq = window.matchMedia('(max-width: 63.99rem)');
+    const blockers = new Set<Element>();
+    let pastFold = false;
+
+    const update = () => {
+      const show = mq.matches && pastFold && blockers.size === 0;
+      bar.classList.toggle('is-visible', show);
+      bar.toggleAttribute('inert', !show);
+      bar.setAttribute('aria-hidden', String(!show));
+      document.documentElement.classList.toggle('has-sticky-contact', show);
+    };
+
+    const onScroll = () => {
+      pastFold = window.scrollY > window.innerHeight * 0.7;
+      update();
+    };
+
+    new IntersectionObserver((entries) => {
+      entries.forEach((e) => (e.isIntersecting ? blockers.add(e.target) : blockers.delete(e.target)));
+      update();
+    }).observe(document.querySelector('.site-footer') ?? document.body);
+    document.querySelectorAll('.band, .channels, .cta-final').forEach((el) =>
+      new IntersectionObserver((entries) => {
+        entries.forEach((e) => (e.isIntersecting ? blockers.add(e.target) : blockers.delete(e.target)));
+        update();
+      }).observe(el),
+    );
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    mq.addEventListener('change', update);
+    onScroll();
+  }
+</script>
+
+<style>
+  .sticky-contact {
+    position: fixed;
+    left: var(--sp-3);
+    right: var(--sp-3);
+    max-width: calc(100vw - var(--sp-3) * 2);
+    bottom: calc(var(--sp-3) + env(safe-area-inset-bottom, 0px));
+    z-index: var(--z-header);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-5);
+    border-radius: var(--r-pill);
+    background: var(--brand-red-deep);
+    color: #fff;
+    box-shadow: 0 12px 32px -8px rgb(110 0 14 / 0.45);
+    transform: translateY(calc(100% + 2rem));
+    opacity: 0;
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      opacity var(--dur-base) var(--ease-out);
+  }
+
+  .sticky-contact.is-visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .sticky-contact__text {
+    display: grid;
+    min-width: 0;
+    line-height: 1.25;
+  }
+
+  .sticky-contact__text strong {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sticky-contact__text span {
+    font-size: var(--fs-xs);
+    color: var(--color-on-ink-muted);
+  }
+
+  .sticky-contact__btn {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-height: 44px;
+    padding: 0.625rem 1.125rem;
+    border-radius: var(--r-pill);
+    background: #fff;
+    color: var(--brand-red-deep);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .sticky-contact__btn:hover {
+    background: var(--brand-blush);
+  }
+
+  .sticky-contact :focus-visible {
+    outline-color: #fff;
+  }
+
+  @media (min-width: 64rem) {
+    .sticky-contact {
+      display: none;
+    }
+  }
+</style>
+
+<style is:global>
+  /* Espaço extra no fim da página enquanto a barra está visível (não cobre conteúdo) */
+  html.has-sticky-contact body {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  }
+</style>

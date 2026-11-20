@@ -1,0 +1,39 @@
+---
+import { icons, type IconName } from './icons';
+
+/**
+ * Família única de ícones lineares (traço 1.75, cantos arredondados, grade 24px).
+ * Desenhos baseados no conjunto Lucide (licença ISC) — https://lucide.dev
+ * Ícones decorativos ficam ocultos de leitores de tela; passe `label` quando o ícone for o único conteúdo.
+ */
+interface Props {
+  name: IconName;
+  size?: number;
+  label?: string;
+  class?: string;
+  strokeWidth?: number;
+}
+
+
+
+const { name, size = 20, label, class: className, strokeWidth = 1.75 } = Astro.props;
+const body = icons[name];
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class:list={['icon', className]}
+  aria-hidden={label ? undefined : 'true'}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  focusable="false"
+  set:html={body}
+/>

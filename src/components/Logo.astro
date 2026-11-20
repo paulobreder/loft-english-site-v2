@@ -1,0 +1,74 @@
+---
+import { url } from '../lib/url';
+/**
+ * Logo minimalista opção C (prancha aprovada):
+ * búfalo vermelho + divisor fino vermelho + "Loft English" em azul-marinho (Montserrat Bold).
+ * O nome é texto real (acessível e nítido em qualquer densidade de tela).
+ */
+import BuffaloMark from './BuffaloMark.astro';
+
+interface Props {
+  size?: 'sm' | 'md' | 'lg';
+  href?: string | null;
+  class?: string;
+}
+const { size = 'md', href = url('/'), class: className } = Astro.props;
+const Tag = href ? 'a' : 'div';
+---
+
+<Tag
+  href={href ?? undefined}
+  class:list={['logo', `logo--${size}`, className]}
+  aria-label={href ? 'Loft English — página inicial' : undefined}
+>
+  <BuffaloMark class="logo__mark" />
+  <span class="logo__divider" aria-hidden="true"></span>
+  <span class="logo__name" aria-hidden={href ? 'true' : undefined}>Loft English</span>
+</Tag>
+
+<style>
+  .logo {
+    --logo-h: 2.125rem;
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--logo-h) * 0.36);
+    text-decoration: none;
+    color: var(--brand-navy);
+    min-height: 44px;
+    flex-shrink: 0;
+  }
+
+  .logo--sm {
+    --logo-h: 1.75rem;
+  }
+
+  .logo--lg {
+    --logo-h: 2.75rem;
+  }
+
+  .logo :global(.logo__mark) {
+    flex: none;
+    height: calc(var(--logo-h) * 0.82);
+    width: calc(var(--logo-h) * 0.82 * 472 / 338);
+  }
+
+  .logo__divider {
+    width: 2px;
+    height: var(--logo-h);
+    background: var(--brand-red);
+    border-radius: 2px;
+  }
+
+  .logo__name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--logo-h) * 0.62);
+    letter-spacing: -0.015em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  a.logo:focus-visible {
+    outline-offset: 6px;
+  }
+</style>

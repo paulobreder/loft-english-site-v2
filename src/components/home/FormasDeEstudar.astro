@@ -1,0 +1,153 @@
+---
+/**
+ * "Formas de estudar" — alternância Presencial / Online (abas acessíveis).
+ * Oculta até a escola confirmar ao menos uma modalidade em src/config/site.ts → modalidades.
+ */
+import Icon from '../Icon.astro';
+import type { IconName } from '../icons';
+import { modalidades, primaryContact } from '../../config/site';
+
+const lista = (
+  [
+    { id: 'presencial', rotulo: 'Presencial', icon: 'home', ...modalidades.presencial },
+    { id: 'online', rotulo: 'Online', icon: 'monitor', ...modalidades.online },
+  ] as { id: string; rotulo: string; icon: IconName; confirmado: boolean; texto: string | null }[]
+).filter((m) => m.confirmado && m.texto);
+const cta = primaryContact();
+---
+
+{
+  lista.length > 0 && (
+    <section class="section section--alt formas" aria-labelledby="formas-title" data-formas>
+      <div class="container formas__inner">
+        <div class="section-head">
+          <p class="eyebrow">Formas de estudar</p>
+          <h2 id="formas-title">Escolha como prefere aprender.</h2>
+        </div>
+        {lista.length > 1 && (
+          <div class="formas__tabs" role="tablist" aria-label="Modalidades">
+            {lista.map((m, i) => (
+              <button
+                type="button"
+                role="tab"
+                id={`tab-${m.id}`}
+                aria-controls={`painel-${m.id}`}
+                aria-selected={i === 0 ? 'true' : 'false'}
+                tabindex={i === 0 ? 0 : -1}
+                class="formas__tab"
+              >
+                <Icon name={m.icon} size={18} />
+                {m.rotulo}
+              </button>
+            ))}
+          </div>
+        )}
+        {lista.map((m, i) => (
+          <div
+            class="formas__painel"
+            role={lista.length > 1 ? 'tabpanel' : undefined}
+            id={`painel-${m.id}`}
+            aria-labelledby={lista.length > 1 ? `tab-${m.id}` : undefined}
+            hidden={i > 0}
+          >
+            <span class="formas__icon"><Icon name={m.icon} size={28} /></span>
+            <h3>{m.rotulo}</h3>
+            <p>{m.texto}</p>
+            <a class="arrow-link" href={cta.href} target="_blank" rel="noopener noreferrer">
+              Consultar disponibilidade <Icon name="arrow-up-right" size={18} />
+              <span class="visually-hidden"> (abre em nova aba)</span>
+            </a>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-formas]').forEach((sec) => {
+    const tabs = [...sec.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const select = (t: HTMLButtonElement) => {
+      tabs.forEach((x) => {
+        const on = x === t;
+        x.setAttribute('aria-selected', String(on));
+        x.tabIndex = on ? 0 : -1;
+        const p = sec.querySelector<HTMLElement>('#' + x.getAttribute('aria-controls'));
+        if (p) p.hidden = !on;
+      });
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t));
+      t.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        select(n);
+        n.focus();
+      });
+    });
+  });
+</script>
+
+<style>
+  .formas__inner {
+    display: grid;
+    justify-items: start;
+  }
+
+  .formas__tabs {
+    display: inline-flex;
+    gap: var(--sp-1);
+    padding: var(--sp-1);
+    margin-bottom: var(--sp-5);
+    border-radius: var(--r-pill);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+  }
+
+  .formas__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-height: 44px;
+    padding: 0.5rem 1.25rem;
+    border: 0;
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--color-ink);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .formas__tab[aria-selected='true'] {
+    background: var(--brand-navy);
+    color: #fff;
+  }
+
+  .formas__painel {
+    display: grid;
+    gap: var(--sp-3);
+    justify-items: start;
+    width: 100%;
+    max-width: 40rem;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border-radius: var(--r-xl);
+    background: var(--color-surface);
+  }
+
+  .formas__painel[hidden] {
+    display: none;
+  }
+
+  .formas__icon {
+    color: var(--brand-red);
+  }
+
+  .formas__painel h3 {
+    font-size: var(--fs-xl);
+    font-weight: 800;
+  }
+
+  .formas__painel p {
+    color: var(--color-muted);
+  }
+</style>

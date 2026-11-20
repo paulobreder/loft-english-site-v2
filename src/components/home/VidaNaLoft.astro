@@ -1,0 +1,243 @@
+---
+/**
+ * "Vida na Loft" — galeria editorial (sem carrossel).
+ * As fotos vêm de `virtual:vida-na-loft`, escolhido na build (ver astro.config.mjs):
+ *   oculto (padrão) → nada é renderizado · previa → só no dev local · publicado → após liberação.
+ *
+ * Grade desktop (≥64rem), espelhada:
+ *   [ aula coletiva 3:2 ........ ][ selfie 4:5 ]
+ *   [ nota ][ atividade com lanche 16:10 ....... ]
+ */
+import { Picture } from 'astro:assets';
+import { vidaNaLoft } from 'virtual:vida-na-loft';
+import Icon from '../Icon.astro';
+import BuffaloMark from '../BuffaloMark.astro';
+import { contact } from '../../config/site';
+import type { PhotoId } from '../../data/vida-na-loft/tipos';
+
+const { mode, photos } = vidaNaLoft;
+const show = mode !== 'oculto' && photos.length > 0;
+
+const sizes: Record<PhotoId, string> = {
+  'aula-coletiva': '(min-width: 64rem) 58vw, 94vw',
+  'selfie-turma': '(min-width: 64rem) 30vw, (min-width: 48rem) 48vw, 94vw',
+  'atividade-lanche': '(min-width: 64rem) 58vw, 94vw',
+};
+---
+
+{
+  show && (
+    <section
+      class:list={['section', 'vida', mode === 'previa' && 'vida--previa']}
+      id="vida-na-loft"
+      aria-labelledby="vida-title"
+      data-modo={mode}
+    >
+      <div class="container">
+
+        <div class="vida__head">
+          <div class="section-head">
+            <p class="eyebrow">Vida na Loft</p>
+            <h2 id="vida-title">Muito além da sala de aula.</h2>
+          </div>
+          <p class="lead">Momentos do dia a dia da Loft English, compartilhados pela escola em seu perfil oficial.</p>
+        </div>
+
+        <div class="vida__grid">
+          {photos.map((photo) => (
+            <div
+              class:list={['vida__photo', `vida__photo--${photo.id}`, 'media-fill']}
+              style={`--pos-m: ${photo.position.mobile}; --pos-d: ${photo.position.desktop}`}
+            >
+              <Picture
+                src={photo.src}
+                alt={photo.alt}
+                formats={['avif', 'webp']}
+                fallbackFormat="jpg"
+                quality={72}
+                widths={[480, 720, 960, 1280]}
+                sizes={sizes[photo.id]}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          ))}
+
+          <div class="vida__note on-dark">
+            <BuffaloMark class="vida__note-mark" color="currentColor" />
+            <p class="vida__note-text">Acompanhe as turmas, as atividades e as novidades da escola.</p>
+            <a class="vida__note-link" href={contact.instagramUrl} target="_blank" rel="noopener noreferrer">
+              <Icon name="instagram" size={18} />
+              <span>Ver mais no Instagram</span>
+              <span class="visually-hidden"> (abre em nova aba)</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .vida__head {
+    display: grid;
+    gap: var(--sp-4);
+    margin-bottom: clamp(var(--sp-7), 2rem + 2vw, var(--sp-9));
+  }
+
+  .vida__head .section-head {
+    margin-bottom: 0;
+  }
+
+  /* ---------- Grade (mobile-first: empilhada) ---------- */
+  .vida__grid {
+    display: grid;
+    gap: var(--sp-4);
+  }
+
+  .vida__photo {
+    margin: 0;
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    background: var(--color-surface-alt);
+  }
+
+  .vida__photo :global(img) {
+    object-position: var(--pos-m);
+  }
+
+  .vida__photo--aula-coletiva {
+    aspect-ratio: 3 / 2;
+  }
+
+  .vida__photo--selfie-turma {
+    aspect-ratio: 4 / 5;
+  }
+
+  .vida__photo--atividade-lanche {
+    aspect-ratio: 4 / 3;
+  }
+
+  .vida__note {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    display: grid;
+    align-content: space-between;
+    justify-items: start;
+    gap: var(--sp-6);
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border-radius: var(--r-xl);
+    background: var(--brand-red);
+    color: #fff;
+  }
+
+  .vida__note :global(.vida__note-mark) {
+    width: 4.5rem;
+    color: #fff;
+    height: auto;
+    color: var(--brand-red);
+  }
+
+  .vida__note-text {
+    font-family: var(--font-display);
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    max-width: 18ch;
+  }
+
+  .vida__note-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-height: 48px;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--r-pill);
+    border: 1.5px solid rgb(255 255 255 / 0.4);
+    color: #fff;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out);
+  }
+
+  .vida__note-link:hover {
+    border-color: #fff;
+    background: rgb(255 255 255 / 0.08);
+  }
+
+  /* ---------- Tablet ---------- */
+  @media (min-width: 48rem) {
+    .vida__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .vida__photo--aula-coletiva,
+    .vida__photo--atividade-lanche {
+      grid-column: 1 / -1;
+    }
+
+    .vida__photo--aula-coletiva {
+      grid-row: 1;
+    }
+
+    .vida__photo--selfie-turma {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .vida__note {
+      grid-column: 2;
+      grid-row: 2;
+      min-height: 0;
+    }
+
+    .vida__photo--atividade-lanche {
+      grid-row: 3;
+    }
+  }
+
+  /* ---------- Desktop: grade assimétrica espelhada ---------- */
+  @media (min-width: 64rem) {
+    .vida__head {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: end;
+      gap: var(--sp-9);
+    }
+
+    .vida__grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: var(--sp-5);
+    }
+
+    .vida__photo :global(img) {
+      object-position: var(--pos-d);
+    }
+
+    .vida__photo--aula-coletiva {
+      grid-column: 1 / span 8;
+      grid-row: 1;
+      aspect-ratio: 3 / 2;
+    }
+
+    .vida__photo--selfie-turma {
+      grid-column: 9 / span 4;
+      grid-row: 1;
+      aspect-ratio: auto;
+    }
+
+    .vida__note {
+      grid-column: 1 / span 4;
+      grid-row: 2;
+    }
+
+    .vida__photo--atividade-lanche {
+      grid-column: 5 / span 8;
+      grid-row: 2;
+    }
+  }
+</style>

@@ -1,0 +1,515 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { Picture } from 'astro:assets';
+import Icon from '../components/Icon.astro';
+import BuffaloMark from '../components/BuffaloMark.astro';
+import cityMap from '../assets/images/mapa-sao-gabriel-da-palha-azul.png';
+import type { IconName } from '../components/icons';
+import { site, contact } from '../config/site';
+
+interface Channel {
+  icon: IconName;
+  label: string;
+  value: string;
+  href: string | null;
+  external: boolean;
+  action: string | null;
+  primary?: boolean;
+}
+
+/** Canais exibidos apenas quando confirmados em src/config/site.ts. */
+const channels: Channel[] = [];
+
+if (contact.whatsappE164) {
+  channels.push({
+    icon: 'whatsapp',
+    label: 'WhatsApp',
+    value: contact.phoneDisplay ?? 'Enviar mensagem',
+    href: `https://wa.me/${contact.whatsappE164}?text=${encodeURIComponent('Olá! Vim pelo site da Loft English e gostaria de informações.')}`,
+    external: true,
+    action: 'Conversar pelo WhatsApp',
+    primary: true,
+  });
+}
+
+channels.push({
+  icon: 'instagram',
+  label: 'Instagram oficial',
+  value: contact.instagramHandle,
+  href: contact.instagramUrl,
+  external: true,
+  action: 'Conversar pelo Instagram',
+  primary: !contact.whatsappE164,
+});
+
+if (contact.phoneDisplay && !contact.whatsappE164) {
+  channels.push({
+    icon: 'phone',
+    label: 'Telefone',
+    value: contact.phoneDisplay,
+    href: `tel:${contact.phoneDisplay.replace(/[^\d+]/g, '')}`,
+    external: false,
+    action: 'Ligar',
+  });
+}
+
+if (contact.email) {
+  channels.push({
+    icon: 'mail',
+    label: 'E-mail',
+    value: contact.email,
+    href: `mailto:${contact.email}`,
+    external: false,
+    action: 'Enviar e-mail',
+  });
+}
+
+const hasAddress = Boolean(contact.addressLine);
+
+/**
+ * Mapa: imagem estática da CIDADE (OpenStreetMap, gerada por scripts/gerar-mapa.mjs),
+ * sem pino em endereço — o endereço exato ainda não foi confirmado.
+ * Link: ficha confirmada (contact.mapsUrl) quando existir; senão, busca pela cidade.
+ */
+const mapLink = contact.mapsUrl
+  ? { href: contact.mapsUrl, label: 'Como chegar' }
+  : {
+      href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${site.city}, ${site.state}`)}`,
+      label: 'Ver a cidade no Google Maps',
+    };
+---
+
+<BaseLayout
+  stickyContact={false}
+  title="Contato | Loft English em São Gabriel da Palha – ES"
+  description="Fale com a Loft English para conhecer os cursos de inglês Kids, Teens e Adults e consultar as condições disponíveis em São Gabriel da Palha (ES)."
+>
+  <PageHero
+    eyebrow="Contato"
+    title="Fale com a Loft English."
+    lead="Tire suas dúvidas sobre os cursos e encontre o melhor caminho para começar. Escolha um dos canais oficiais abaixo."
+  />
+
+  <section class="section contact" aria-label="Canais de atendimento">
+    <div class="container contact__grid">
+      <ul class="channels">
+        {
+          channels.map((c) => (
+            <li class:list={['channel', c.primary && 'channel--primary on-dark']}>
+              {c.primary && <BuffaloMark class="channel__mark" color="currentColor" />}
+              {c.href ? (
+                <a
+                  class="channel__icon channel__icon--link"
+                  href={c.href}
+                  target={c.external ? '_blank' : undefined}
+                  rel={c.external ? 'noopener noreferrer' : undefined}
+                  tabindex="-1"
+                  aria-hidden="true"
+                  title={c.action ?? undefined}
+                >
+                  <Icon name={c.icon} size={c.primary ? 44 : 26} strokeWidth={c.primary ? 1.5 : 1.75} />
+                </a>
+              ) : (
+                <span class="channel__icon">
+                  <Icon name={c.icon} size={c.primary ? 44 : 26} strokeWidth={c.primary ? 1.5 : 1.75} />
+                </span>
+              )}
+              <div class="channel__body">
+                <p class="channel__label">{c.label}</p>
+                <p class="channel__value">{c.value}</p>
+                {c.primary && <p class="channel__hint">Envie uma mensagem direta para tirar suas dúvidas sobre os cursos.</p>}
+              </div>
+              {c.href && (
+                <a
+                  class="channel__action"
+                  href={c.href}
+                  target={c.external ? '_blank' : undefined}
+                  rel={c.external ? 'noopener noreferrer' : undefined}
+                >
+                  <span>{c.action}</span>
+                  <Icon name={c.external ? 'arrow-up-right' : 'arrow-right'} size={18} />
+                  {c.external && <span class="visually-hidden"> (abre em nova aba)</span>}
+                </a>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+
+      <aside class="place" aria-labelledby="place-title">
+        <figure class="place__map media-fill">
+          <Picture
+            src={cityMap}
+            alt={`Mapa da área central de ${site.city}, ${site.state}`}
+            formats={['avif', 'webp']}
+            fallbackFormat="jpg"
+            quality={80}
+            widths={[480, 720, 900]}
+            sizes="(min-width: 64rem) 34vw, 92vw"
+            loading="lazy"
+          />
+          <span class="place__ring" aria-hidden="true"></span>
+          <span class="place__tag">
+            <Icon name="map-pin" size={16} />
+            {site.city} · {site.state}
+          </span>
+          <figcaption class="place__credit">
+            Mapa: ©{' '}
+            <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">
+              colaboradores do OpenStreetMap<span class="visually-hidden"> (abre em nova aba)</span>
+            </a>
+          </figcaption>
+        </figure>
+
+        <div class="place__body">
+          <h2 id="place-title" class="place__title">
+            <Icon name="map-pin" size={20} />
+            Onde estamos
+          </h2>
+          <p class="place__city">
+            {site.city}
+            <span>{site.stateName}</span>
+          </p>
+          {
+            hasAddress ? (
+              <p class="place__address">
+                {contact.addressLine}
+                {contact.zip && <>· CEP {contact.zip}</>}
+              </p>
+            ) : (
+              <p class="place__note">
+                Para orientações sobre endereço e atendimento presencial, fale com a equipe pelos canais oficiais.
+              </p>
+            )
+          }
+          {
+            contact.businessHours && (
+              <p class="place__hours">
+                <Icon name="clock" size={18} />
+                <span>{contact.businessHours}</span>
+              </p>
+            )
+          }
+          <a class="arrow-link place__link" href={mapLink.href} target="_blank" rel="noopener noreferrer">
+            {mapLink.label} <Icon name="arrow-up-right" size={18} />
+            <span class="visually-hidden"> (abre em nova aba)</span>
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact__grid {
+    display: grid;
+    gap: var(--sp-5);
+  }
+
+  .channels {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+  }
+
+  /* ---------- Cartões de canal ---------- */
+  .channel {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: var(--sp-4) var(--sp-5);
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border: 1px solid var(--color-line);
+    border-radius: var(--r-xl);
+    background: var(--color-surface);
+  }
+
+  .channel__icon {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: var(--r-md);
+    background: var(--color-surface-alt);
+    color: var(--brand-red);
+  }
+
+  .channel__label {
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .channel__value {
+    font-family: var(--font-display);
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    color: var(--color-ink);
+    overflow-wrap: anywhere;
+  }
+
+  .channel__action {
+    grid-column: 1 / -1;
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-height: 48px;
+    padding: 0.75rem 1.375rem;
+    border-radius: var(--r-pill);
+    border: 1.5px solid var(--color-line-strong);
+    color: var(--color-ink);
+    font-weight: 600;
+    font-size: var(--fs-sm);
+    text-decoration: none;
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .channel__action:hover {
+    border-color: var(--color-ink);
+  }
+
+  /* Canal principal: cartão vertical, arroba inteiro em uma linha */
+  .channel--primary {
+    flex: 1;
+    grid-template-columns: 1fr;
+    align-content: center;
+    justify-items: center;
+    gap: var(--sp-6);
+    text-align: center;
+    background: var(--brand-red-deep);
+    border-color: var(--brand-red-deep);
+    color: #fff;
+  }
+
+  /* Ícone clicável: mesmo destino do botão (atalho para mouse/toque; o botão segue como alvo do teclado) */
+  .channel__icon--link {
+    cursor: pointer;
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      background-color var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out);
+  }
+
+  .channel__icon--link:hover {
+    transform: translateY(-2px);
+  }
+
+  .channel--primary .channel__icon--link:hover {
+    background: #fff;
+    color: var(--brand-red-deep);
+    box-shadow: none;
+  }
+
+  .channel__icon--link:active {
+    transform: scale(0.97);
+  }
+
+  .channel--primary .channel__icon {
+    width: 5.5rem;
+    height: 5.5rem;
+    border-radius: var(--r-lg);
+    background: rgb(255 255 255 / 0.08);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14);
+    color: #fff;
+  }
+
+  .channel--primary :global(.channel__mark) {
+    position: absolute;
+    right: -12%;
+    bottom: -16%;
+    width: min(58%, 20rem);
+    height: auto;
+    color: rgb(255 255 255 / 0.05);
+    z-index: -1;
+  }
+
+  .channel--primary .channel__body {
+    display: grid;
+    justify-items: center;
+    gap: var(--sp-2);
+  }
+
+  .channel--primary .channel__label {
+    color: var(--color-on-ink-muted);
+  }
+
+  .channel--primary .channel__value {
+    color: #fff;
+    font-size: clamp(1.5rem, 1.05rem + 2vw, 2.375rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow-wrap: normal;
+  }
+
+  .channel__hint {
+    max-width: 30ch;
+    color: var(--color-on-ink-muted);
+  }
+
+  .channel--primary .channel__action {
+    justify-self: center;
+    background: #fff;
+    border-color: #fff;
+    color: var(--brand-red-deep);
+  }
+
+  .channel--primary .channel__action:hover {
+    background: var(--brand-blush);
+    border-color: var(--brand-blush);
+  }
+
+  /* ---------- Onde estamos + mapa ---------- */
+  .place {
+    display: grid;
+    align-content: start;
+    gap: var(--sp-5);
+    padding: var(--sp-3);
+    border-radius: var(--r-xl);
+    background: var(--color-surface-alt);
+  }
+
+  .place__map {
+    margin: 0;
+    aspect-ratio: 16 / 10;
+    border-radius: calc(var(--r-xl) - var(--sp-3));
+    overflow: hidden;
+    background: #eef0ec;
+    box-shadow: inset 0 0 0 1px var(--color-line);
+  }
+
+  .place__ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 38%;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    border-radius: 50%;
+    border: 2px solid rgb(196 0 24 / 0.55);
+    background: rgb(196 0 24 / 0.08);
+    pointer-events: none;
+  }
+
+  .place__tag {
+    position: absolute;
+    left: var(--sp-3);
+    top: var(--sp-3);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.4375rem 0.875rem;
+    border-radius: var(--r-pill);
+    background: #fff;
+    color: var(--color-ink);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    box-shadow: var(--shadow-1);
+  }
+
+  .place__tag :global(svg) {
+    color: var(--brand-red);
+  }
+
+  .place__credit {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 0.25rem 0.625rem;
+    border-top-left-radius: var(--r-sm);
+    background: rgb(255 255 255 / 0.88);
+    color: var(--color-muted);
+    font-size: 0.6875rem;
+    line-height: 1.4;
+  }
+
+  .place__credit a {
+    color: inherit;
+  }
+
+  .place__body {
+    display: grid;
+    gap: var(--sp-4);
+    justify-items: start;
+    padding: var(--sp-3) clamp(0.75rem, 0.25rem + 1.6vw, 1.75rem) clamp(1rem, 0.5rem + 1.6vw, 1.75rem);
+  }
+
+  .place__title {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-family: var(--font-body);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+  }
+
+  .place__title :global(svg) {
+    color: var(--brand-red);
+  }
+
+  .place__city {
+    display: grid;
+    font-family: var(--font-display);
+    font-size: var(--fs-2xl);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: var(--color-ink);
+  }
+
+  .place__city span {
+    font-size: var(--fs-md);
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--color-muted);
+    margin-top: var(--sp-2);
+  }
+
+  .place__note,
+  .place__address {
+    color: var(--color-muted);
+    max-width: 34rem;
+  }
+
+  .place__hours {
+    display: inline-flex;
+    gap: var(--sp-2);
+    align-items: center;
+    color: var(--color-text);
+  }
+
+  .place__link :global(svg) {
+    color: var(--brand-red);
+  }
+
+  @media (min-width: 64rem) {
+    .contact__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: stretch;
+      gap: var(--sp-6);
+    }
+
+    .channel:not(.channel--primary) {
+      grid-template-columns: auto 1fr auto;
+    }
+
+    .channel:not(.channel--primary) .channel__action {
+      grid-column: auto;
+      justify-self: end;
+    }
+  }
+</style>

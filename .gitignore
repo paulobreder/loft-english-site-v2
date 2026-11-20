@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+.env
+.env.*
+# Fotos de pessoas reais aguardando autorização (inclui menores). Nunca versionar em repositório que possa ser público.
+05_FOTOS_ESCOLA_PENDENTES_LIBERACAO/

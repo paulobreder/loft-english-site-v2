@@ -1,0 +1,101 @@
+---
+import Icon from './Icon.astro';
+import type { FaqItem } from '../data/faq';
+
+interface Props {
+  items: FaqItem[];
+}
+const { items } = Astro.props;
+---
+
+<div class="faq">
+  {
+    items.map((item, i) => (
+      <details class="faq__item" open={i === 0}>
+        <summary class="faq__q">
+          <span>{item.q}</span>
+          <span class="faq__icon">
+            <Icon name="plus" size={20} />
+          </span>
+        </summary>
+        <div class="faq__a">
+          <p set:html={item.a} />
+        </div>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .faq {
+    border-top: 1px solid var(--color-line-strong);
+  }
+
+  .faq__item {
+    border-bottom: 1px solid var(--color-line-strong);
+  }
+
+  .faq__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-5);
+    min-height: 64px;
+    padding-block: var(--sp-5);
+    font-family: var(--font-display);
+    font-size: var(--fs-md);
+    font-weight: 700;
+    color: var(--color-ink);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .faq__q::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__q:hover {
+    color: var(--brand-red);
+  }
+
+  .faq__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    border: 1px solid var(--color-line-strong);
+    color: var(--brand-red);
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      background-color var(--dur-base) var(--ease-out);
+  }
+
+  .faq__item[open] .faq__icon {
+    transform: rotate(45deg);
+    background: var(--color-surface-alt);
+  }
+
+  .faq__a {
+    padding-bottom: var(--sp-6);
+    padding-right: clamp(0rem, 4vw, 3.5rem);
+    color: var(--color-muted);
+    max-width: 44rem;
+  }
+
+  .faq__a :global(a) {
+    color: var(--color-ink);
+    font-weight: 600;
+    text-decoration-color: var(--brand-red);
+    text-decoration-thickness: 2px;
+  }
+
+  .faq__a :global(a:hover) {
+    color: var(--brand-red);
+  }
+
+  .faq__a :global(strong) {
+    color: var(--color-ink);
+  }
+</style>

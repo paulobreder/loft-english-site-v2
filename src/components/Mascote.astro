@@ -1,0 +1,78 @@
+---
+/**
+ * Mascote da Loft English — o búfalo (ilustrações em 02_IDENTIDADE_VISUAL/mascote/).
+ * - corpo: búfalo correndo (galope suave em loop)
+ * - circulo: búfalo no círculo vermelho (balanço leve)
+ * Decorativo (alt vazio). Movimento desligado com prefers-reduced-motion.
+ */
+import { Image } from 'astro:assets';
+import corpo from '../assets/images/mascote/bufalo-corpo.webp';
+import circulo from '../assets/images/mascote/bufalo-circulo.webp';
+
+interface Props {
+  variante?: 'corpo' | 'circulo';
+  largura?: number;
+  class?: string;
+  espelhar?: boolean;
+}
+
+const { variante = 'corpo', largura = 320, class: className, espelhar = false } = Astro.props;
+const src = variante === 'corpo' ? corpo : circulo;
+---
+
+<span class:list={['mascote', `mascote--${variante}`, espelhar && 'mascote--espelhado', className]} aria-hidden="true">
+  <Image src={src} alt="" width={largura} widths={[largura, largura * 2]} sizes={`${largura}px`} loading="lazy" decoding="async" />
+</span>
+
+<style>
+  .mascote {
+    display: inline-block;
+    pointer-events: none;
+    filter: drop-shadow(0 18px 18px rgb(110 10 22 / 0.18));
+  }
+
+  .mascote :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .mascote--espelhado :global(img) {
+    transform: scaleX(-1);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mascote--corpo {
+      animation: galope 1.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+      transform-origin: 60% 90%;
+    }
+
+    .mascote--circulo {
+      animation: balanco 4.5s ease-in-out infinite;
+      transform-origin: 50% 85%;
+    }
+  }
+
+  @keyframes galope {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    30% {
+      transform: translateY(-10px) rotate(-2.5deg);
+    }
+    55% {
+      transform: translateY(-3px) rotate(1deg);
+    }
+  }
+
+  @keyframes balanco {
+    0%,
+    100% {
+      transform: rotate(-3deg) translateY(0);
+    }
+    50% {
+      transform: rotate(3deg) translateY(-6px);
+    }
+  }
+</style>

@@ -1,0 +1,169 @@
+---
+/**
+ * "Por que aprender inglês?" (v2) — cards com imagem de topo em arco.
+ * Benefícios gerais do IDIOMA (sem prometer resultados da escola).
+ * Imagens atuais reaproveitadas como apoio; serão trocadas pelas imagens de apoio da próxima rodada.
+ */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Icon from '../Icon.astro';
+import { url } from '../../lib/url';
+import imgEua from '../../assets/images/apoio-eua-nova-york.webp';
+import imgLondres from '../../assets/images/apoio-londres-ilustrativo.png';
+import imgAdulto from '../../assets/images/cursos/adults.jpg';
+import imgLanche from '../../assets/images/escola/atividade-lanche.png';
+
+const itens: { img: ImageMetadata; alt: string; pos: string; titulo: string; subtitulo: string; texto: string }[] = [
+  {
+    img: imgEua,
+    alt: 'Bandeira dos Estados Unidos sobre o horizonte de Nova York (imagem ilustrativa)',
+    pos: '45% 22%',
+    titulo: 'Viajar com mais autonomia',
+    subtitulo: 'Viagens',
+    texto: 'Pedir informações, fazer amizades e aproveitar cada destino com mais tranquilidade.',
+  },
+  {
+    img: imgLondres,
+    alt: 'Vista ilustrativa de uma cidade de língua inglesa às margens de um rio',
+    pos: '55% 60%',
+    titulo: 'Ampliar os estudos',
+    subtitulo: 'Estudos',
+    texto: 'Ter acesso a mais cursos, intercâmbios, livros e materiais publicados em inglês.',
+  },
+  {
+    img: imgAdulto,
+    alt: 'Homem adulto estudando inglês à mesa (imagem ilustrativa)',
+    pos: '50% 30%',
+    titulo: 'Crescer na carreira',
+    subtitulo: 'Trabalho',
+    texto: 'O inglês está presente em muitas profissões e processos seletivos, em diversas áreas.',
+  },
+  {
+    img: imgLanche,
+    alt: 'Estudantes reunidos ao redor de uma mesa com lanches, com um filme na TV ao fundo',
+    pos: '50% 18%',
+    titulo: 'Conectar-se com o mundo',
+    subtitulo: 'Cultura',
+    texto: 'Filmes, séries, músicas e conversas com pessoas de outros países, sem depender da legenda.',
+  },
+];
+---
+
+<section class="section porque" aria-labelledby="porque-title">
+  <div class="container">
+    <div class="porque__head">
+      <p class="eyebrow">Por que aprender inglês?</p>
+      <h2 id="porque-title">Um idioma que abre portas em todas as fases.</h2>
+    </div>
+
+    <ul class="porque__grid">
+      {
+        itens.map((i, n) => (
+          <li class:list={['arco-card', n % 2 === 1 && 'arco-card--desce']}>
+            <div class="arco-card__img media-fill">
+              <Picture
+                src={i.img}
+                alt={i.alt}
+                formats={['avif', 'webp']}
+                fallbackFormat="jpg"
+                quality={70}
+                widths={[480, 720, 960]}
+                sizes="(min-width: 48rem) 45vw, 92vw"
+                loading="lazy"
+                style={`object-position:${i.pos}`}
+              />
+            </div>
+            <div class="arco-card__texto">
+              <h3>{i.titulo}</h3>
+              <p class="arco-card__sub">{i.subtitulo}</p>
+              <p>{i.texto}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <a class="arrow-link porque__link" href={url('/cursos/')}>
+      Encontre o curso para a sua fase <Icon name="arrow-right" size={18} />
+    </a>
+  </div>
+</section>
+
+<style>
+  .porque__head {
+    display: grid;
+    justify-items: center;
+    gap: var(--sp-3);
+    text-align: center;
+    margin-bottom: clamp(var(--sp-8), 2rem + 3vw, var(--sp-10));
+  }
+
+  .porque__head h2 {
+    font-size: var(--fs-2xl);
+    font-weight: 800;
+    max-width: 22ch;
+  }
+
+  .porque__grid {
+    list-style: none;
+    display: grid;
+    gap: var(--sp-9) var(--sp-7);
+  }
+
+  .arco-card {
+    display: grid;
+  }
+
+  .arco-card__img {
+    aspect-ratio: 1.3;
+    border-radius: 999px 999px var(--r-lg) var(--r-lg);
+    overflow: hidden;
+    background: var(--color-surface-deep);
+  }
+
+  .arco-card__texto {
+    position: relative;
+    margin: -3.5rem var(--sp-4) 0;
+    padding: var(--sp-5) var(--sp-6) var(--sp-6);
+    border-radius: var(--r-lg);
+    background: #fff;
+    box-shadow: var(--shadow-2);
+  }
+
+  .arco-card__texto h3 {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+  }
+
+  .arco-card__sub {
+    margin: var(--sp-1) 0 var(--sp-3);
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--brand-red);
+  }
+
+  .arco-card__texto p:last-child {
+    color: var(--color-muted);
+    font-size: var(--fs-sm);
+    line-height: 1.65;
+  }
+
+  .porque__link {
+    margin-top: var(--sp-8);
+  }
+
+  .porque__link :global(svg) {
+    color: var(--brand-red);
+  }
+
+  @media (min-width: 48rem) {
+    .porque__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* Ritmo desalinhado, como na referência */
+    .arco-card--desce {
+      margin-top: var(--sp-10);
+    }
+  }
+</style>

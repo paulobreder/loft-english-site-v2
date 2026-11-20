@@ -1,0 +1,209 @@
+---
+import { url } from '../lib/url';
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { site, contact } from '../config/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <Logo size="lg" />
+        <p class="site-footer__slogan" lang="en">{site.slogan}</p>
+        <p class="site-footer__place">
+          <Icon name="map-pin" size={18} />
+          <span>{site.city} · {site.stateName}</span>
+        </p>
+      </div>
+
+      <nav class="site-footer__col" aria-label="Rodapé">
+        <h2 class="site-footer__title">Navegação</h2>
+        <ul>
+          <li><a href={url('/')}>Início</a></li>
+          <li><a href={url('/cursos/')}>Cursos</a></li>
+          <li><a href={url('/#sobre-nos')}>Sobre nós</a></li>
+          <li><a href={url('/contato/')}>Contato</a></li>
+        </ul>
+      </nav>
+
+      <div class="site-footer__col">
+        <h2 class="site-footer__title">Cursos</h2>
+        <ul>
+          <li><a href={url('/cursos/#kids')}>Kids</a></li>
+          <li><a href={url('/cursos/#teens')}>Teens</a></li>
+          <li><a href={url('/cursos/#adults')}>Adults</a></li>
+        </ul>
+      </div>
+
+      <div class="site-footer__col">
+        <h2 class="site-footer__title">Canais oficiais</h2>
+        <ul>
+          {
+            contact.whatsappE164 && contact.phoneDisplay && (
+              <li>
+                <a href={`https://wa.me/${contact.whatsappE164}`} target="_blank" rel="noopener noreferrer">
+                  WhatsApp {contact.phoneDisplay}
+                </a>
+              </li>
+            )
+          }
+          {
+            contact.email && (
+              <li>
+                <a href={`mailto:${contact.email}`}>{contact.email}</a>
+              </li>
+            )
+          }
+          <li>
+            <a class="site-footer__social" href={contact.instagramUrl} target="_blank" rel="noopener noreferrer">
+              <Icon name="instagram" size={18} />
+              <span>Instagram {contact.instagramHandle}</span>
+              <span class="visually-hidden"> (abre em nova aba)</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p>© {year} {site.name}. Todos os direitos reservados.</p>
+      <p class="site-footer__note">As fotografias da página inicial e de cursos são imagens ilustrativas.</p>
+      <a href={url('/privacidade/')}>Privacidade</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-surface-alt);
+    color: var(--color-muted);
+    padding-block: var(--sp-10) var(--sp-6);
+    font-size: var(--fs-sm);
+  }
+
+  .site-footer__top {
+    display: grid;
+    gap: var(--sp-8);
+    padding-bottom: var(--sp-8);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .site-footer__brand {
+    display: grid;
+    gap: var(--sp-4);
+    justify-items: start;
+  }
+
+  .site-footer__slogan {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 600;
+    font-size: var(--fs-md);
+    color: var(--brand-red);
+  }
+
+  .site-footer__place {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+
+  .site-footer__place :global(svg) {
+    color: var(--brand-red);
+  }
+
+  .site-footer__title {
+    font-family: var(--font-body);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+    margin-bottom: var(--sp-3);
+  }
+
+  .site-footer__col ul {
+    list-style: none;
+    display: grid;
+  }
+
+  .site-footer a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    color: var(--color-ink);
+    text-decoration: underline;
+  }
+
+  .site-footer__social {
+    gap: var(--sp-2);
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2) var(--sp-6);
+    padding-top: var(--sp-5);
+    font-size: var(--fs-xs);
+  }
+
+  .site-footer__note {
+    flex: 1 1 16rem;
+  }
+
+  @media (min-width: 48rem) {
+    .site-footer__top {
+      grid-template-columns: 1.6fr repeat(3, 1fr);
+      gap: var(--sp-6);
+    }
+  }
+
+  /* ---------- v2: rodapé vermelho profundo ---------- */
+  .site-footer {
+    background: var(--brand-red-deep);
+    color: rgb(255 255 255 / 0.78);
+  }
+
+  .site-footer__brand :global(.logo) {
+    padding: 0.625rem 1.125rem;
+    border-radius: var(--r-md);
+    background: #fff;
+  }
+
+  .site-footer__slogan,
+  .site-footer__place,
+  .site-footer__title {
+    color: #fff;
+  }
+
+  .site-footer__place :global(svg) {
+    color: #fff;
+  }
+
+  .site-footer__top {
+    border-bottom-color: rgb(255 255 255 / 0.18);
+  }
+
+  .site-footer a {
+    color: rgb(255 255 255 / 0.82);
+  }
+
+  .site-footer a:hover {
+    color: #fff;
+  }
+
+  .site-footer :focus-visible {
+    outline-color: #fff;
+  }
+</style>

@@ -1,0 +1,152 @@
+---
+/** Chamada final sobre foto, com três caminhos coloridos e o mascote. */
+import { Picture } from 'astro:assets';
+import Icon from '../Icon.astro';
+import Mascote from '../Mascote.astro';
+import { primaryContact } from '../../config/site';
+import { url } from '../../lib/url';
+import fotoAula from '../../assets/images/escola/aula-coletiva.png';
+
+const cta = primaryContact();
+---
+
+<section class="cta-final on-dark" aria-labelledby="cta-final-title">
+  <div class="cta-final__foto media-fill" aria-hidden="true">
+    <Picture src={fotoAula} alt="" formats={['avif', 'webp']} fallbackFormat="jpg" quality={60} widths={[800, 1280, 1920]} sizes="100vw" loading="lazy" />
+  </div>
+  <div class="container cta-final__inner">
+    <h2 id="cta-final-title">Comece agora a sua jornada no inglês.</h2>
+    <p>Tire suas dúvidas sobre os cursos e encontre o melhor caminho para começar.</p>
+    <div class="cta-final__botoes">
+      <a class="cta-tile cta-tile--vermelho" href={url('/cursos/')}>
+        <Icon name="book-open" size={20} />
+        <span>Conheça os cursos</span>
+      </a>
+      <a class="cta-tile cta-tile--profundo" href={cta.href} target="_blank" rel="noopener noreferrer">
+        <Icon name={cta.channel === 'whatsapp' ? 'whatsapp' : 'instagram'} size={20} />
+        <span>{cta.label}</span>
+        <span class="visually-hidden"> (abre em nova aba)</span>
+      </a>
+      <a class="cta-tile cta-tile--azul" href={url('/contato/')}>
+        <Icon name="map-pin" size={20} />
+        <span>Onde estamos</span>
+      </a>
+    </div>
+  </div>
+  <Mascote variante="corpo" largura={300} espelhar class="cta-final__mascote" />
+</section>
+
+<style>
+  .cta-final {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    color: #fff;
+    padding-block: clamp(5rem, 3rem + 8vw, 9rem) clamp(3rem, 2rem + 4vw, 5rem);
+  }
+
+  .cta-final__foto {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+
+  .cta-final__foto::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, rgb(110 0 14 / 0.95) 0%, rgb(142 0 18 / 0.86) 50%, rgb(142 0 18 / 0.66) 100%);
+  }
+
+  .cta-final__inner {
+    display: grid;
+    gap: var(--sp-5);
+    justify-items: start;
+  }
+
+  .cta-final h2 {
+    color: #fff;
+    font-size: clamp(2.25rem, 1.4rem + 4vw, 4.5rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+    max-width: 14ch;
+  }
+
+  .cta-final p {
+    max-width: 38ch;
+    font-size: var(--fs-md);
+    color: rgb(255 255 255 / 0.88);
+  }
+
+  .cta-final__botoes {
+    display: grid;
+    width: 100%;
+    max-width: 52rem;
+    margin-top: var(--sp-5);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-2);
+  }
+
+  .cta-tile {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    min-height: 4.25rem;
+    padding: var(--sp-4) var(--sp-6);
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: var(--fs-md);
+    font-weight: 700;
+    text-decoration: none;
+    transition: filter var(--dur-fast) var(--ease-out);
+  }
+
+  .cta-tile:hover {
+    filter: brightness(1.12);
+  }
+
+  .cta-tile--vermelho {
+    background: var(--brand-red);
+  }
+
+  .cta-tile--profundo {
+    background: #6e000e;
+  }
+
+  .cta-tile--azul {
+    background: var(--brand-navy);
+  }
+
+  .cta-tile:focus-visible {
+    outline-offset: -4px;
+  }
+
+  .cta-final :global(.cta-final__mascote) {
+    position: absolute;
+    right: 2%;
+    bottom: -1.5rem;
+    width: min(34%, 18rem);
+    z-index: -1;
+    opacity: 0.95;
+  }
+
+  @media (min-width: 48rem) {
+    .cta-final__botoes {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .cta-final :global(.cta-final__mascote) {
+      position: relative;
+      display: block;
+      right: auto;
+      bottom: auto;
+      width: 11rem;
+      margin: var(--sp-6) var(--gutter) -1rem auto;
+      z-index: 0;
+    }
+  }
+</style>

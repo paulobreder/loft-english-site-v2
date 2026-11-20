@@ -1,0 +1,93 @@
+---
+import { url } from '../lib/url';
+import Button from './Button.astro';
+import BuffaloMark from './BuffaloMark.astro';
+import { primaryContact } from '../config/site';
+
+interface Props {
+  title?: string;
+  text?: string;
+  secondary?: { href: string; label: string } | null;
+}
+
+const {
+  title = 'Vamos conversar sobre seu inglês?',
+  text = 'Tire suas dúvidas sobre os cursos e encontre o melhor caminho para começar.',
+  secondary = { href: url('/cursos/'), label: 'Conheça os cursos' },
+} = Astro.props;
+const cta = primaryContact();
+---
+
+<section class="band" aria-labelledby="band-title">
+  <div class="container">
+    <div class="band__panel on-dark">
+      <BuffaloMark class="band__mark" color="currentColor" />
+      <div class="band__content">
+        <h2 id="band-title">{title}</h2>
+        <p>{text}</p>
+        <div class="band__actions">
+          <Button href={cta.href} external icon={cta.channel === 'whatsapp' ? 'whatsapp' : 'instagram'} iconPosition="start" size="lg">
+            {cta.label}
+          </Button>
+          {
+            secondary && (
+              <Button href={secondary.href} variant="ghost-light" icon="arrow-right" size="lg">
+                {secondary.label}
+              </Button>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .band {
+    padding-block: 0 var(--section-y);
+  }
+
+  .band__panel {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: var(--r-frame);
+    background: var(--brand-red-deep);
+    color: var(--color-on-ink);
+    padding: clamp(2.5rem, 1.5rem + 5vw, 5.5rem) clamp(1.5rem, 1rem + 4vw, 5rem);
+  }
+
+  .band__panel :global(.band__mark) {
+    position: absolute;
+    right: -6%;
+    bottom: -18%;
+    width: min(60%, 34rem);
+    height: auto;
+    color: rgb(255 255 255 / 0.05);
+    z-index: -1;
+  }
+
+  .band__content {
+    display: grid;
+    gap: var(--sp-5);
+    max-width: 40rem;
+  }
+
+  .band h2 {
+    color: #fff;
+    font-size: var(--fs-2xl);
+    font-weight: 800;
+  }
+
+  .band p {
+    color: var(--color-on-ink-muted);
+    font-size: var(--fs-md);
+  }
+
+  .band__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    margin-top: var(--sp-2);
+  }
+</style>

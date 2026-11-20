@@ -1,0 +1,123 @@
+---
+/**
+ * AVISO DE PRIVACIDADE — RASCUNHO PARA REVISÃO DA ESCOLA.
+ * Descreve apenas o comportamento técnico REAL deste site (verificado no código):
+ * sem formulários, sem cookies, sem analytics/pixels, fontes e imagens servidas
+ * pelo próprio site, links externos para canais oficiais.
+ * Enquanto flags.privacyReviewed = false: noindex e fora do sitemap.
+ * Revisar quando a hospedagem for definida ou se qualquer ferramenta for adicionada.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { site, contact, flags } from '../config/site';
+
+const updated = '16 de novembro de 2026';
+---
+
+<BaseLayout
+  title="Privacidade | Loft English"
+  description="Como o site da Loft English trata informações de visitantes: sem formulários, sem cookies de rastreamento e sem ferramentas de análise."
+  noindex={!flags.privacyReviewed}
+>
+  <PageHero
+    eyebrow="Privacidade"
+    title="Aviso de privacidade."
+    lead="Transparência sobre o que este site faz — e o que ele não faz — com as informações de quem o visita."
+  />
+
+  <section class="section">
+    <div class="container">
+      <article class="prose">
+        <p class="prose__meta">Última atualização: {updated}</p>
+
+        <h2>1. Quem somos</h2>
+        <p>
+          Este é o site institucional da {site.name}, escola de inglês em {site.city} – {site.state}. O site tem caráter
+          informativo: apresenta a escola e seus cursos e indica os canais oficiais de contato.
+        </p>
+
+        <h2>2. Dados que este site coleta</h2>
+        <p>
+          Este site <strong>não possui formulários</strong>, área de login ou cadastro. Nenhuma informação pessoal é
+          solicitada ou armazenada por meio das páginas.
+        </p>
+
+        <h2>3. Cookies e ferramentas de medição</h2>
+        <p>
+          Este site <strong>não utiliza cookies</strong>, ferramentas de análise de audiência (como Google Analytics),
+          pixels de publicidade ou ferramentas de rastreamento. As fontes tipográficas e as imagens são servidas pelo
+          próprio site, sem chamadas a serviços de terceiros durante a navegação. O mapa da página de contato é uma imagem estática hospedada no próprio site (dados © colaboradores do OpenStreetMap), sem incorporação do Google Maps.
+        </p>
+
+        <h2>4. Registros técnicos de acesso</h2>
+        <p>
+          Como qualquer site na internet, o serviço de hospedagem pode registrar automaticamente dados técnicos das
+          requisições — como endereço IP, data e hora do acesso e tipo de navegador — para fins de segurança e
+          funcionamento. Esses registros são tratados pelo provedor de hospedagem conforme as políticas dele.
+        </p>
+
+        <h2>5. Links para canais externos</h2>
+        <p>
+          Ao clicar em links para o Instagram{contact.whatsappE164 ? ', o WhatsApp' : ''} ou o Google Maps, você sai deste site e
+          passa a interagir diretamente com essas plataformas, que possuem políticas de privacidade próprias. As conversas
+          iniciadas por esses canais são tratadas pela equipe da {site.name} exclusivamente para atender à sua solicitação.
+        </p>
+
+        <h2>6. Seus direitos</h2>
+        <p>
+          Nos termos da Lei Geral de Proteção de Dados (Lei nº 13.709/2018), você pode solicitar informações sobre o
+          tratamento de seus dados pessoais pela {site.name}. Para isso, entre em contato pelo
+          <a href={contact.instagramUrl} target="_blank" rel="noopener noreferrer">Instagram oficial ({contact.instagramHandle})</a>{
+            contact.email && (
+              <>
+                {' '}ou pelo e-mail <a href={`mailto:${contact.email}`}>{contact.email}</a>
+              </>
+            )
+          }.
+        </p>
+
+        <h2>7. Alterações</h2>
+        <p>
+          Se o site passar a utilizar formulários, ferramentas de medição ou outros recursos que envolvam dados pessoais,
+          este aviso será atualizado antes dessa mudança entrar em funcionamento.
+        </p>
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .prose {
+    max-width: 44rem;
+    font-size: var(--fs-md);
+    line-height: 1.75;
+    color: var(--color-text);
+  }
+
+  .prose__meta {
+    font-size: var(--fs-sm);
+    color: var(--color-muted);
+    margin-bottom: var(--sp-6);
+  }
+
+  .prose h2 {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    margin: var(--sp-7) 0 var(--sp-3);
+  }
+
+  .prose p + p {
+    margin-top: var(--sp-4);
+  }
+
+  .prose a {
+    color: var(--color-ink);
+    font-weight: 600;
+    text-decoration-color: var(--brand-red);
+    text-decoration-thickness: 2px;
+  }
+
+  .prose a:hover {
+    color: var(--brand-red);
+  }
+</style>
