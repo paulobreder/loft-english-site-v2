@@ -36,18 +36,19 @@ const sizes: Record<PhotoId, string> = {
       <div class="container">
 
         <div class="vida__head">
-          <div class="section-head">
+          <div class="section-head" data-reveal>
             <p class="eyebrow">Vida na Loft</p>
             <h2 id="vida-title">Muito além da sala de aula.</h2>
           </div>
-          <p class="lead">Momentos do dia a dia da Loft English, compartilhados pela escola em seu perfil oficial.</p>
+          <p class="lead" data-reveal style="--reveal-delay:150ms">Momentos do dia a dia da Loft English, compartilhados pela escola em seu perfil oficial.</p>
         </div>
 
         <div class="vida__grid">
-          {photos.map((photo) => (
+          {photos.map((photo, i) => (
             <div
+              data-reveal="foto"
               class:list={['vida__photo', `vida__photo--${photo.id}`, 'media-fill']}
-              style={`--pos-m: ${photo.position.mobile}; --pos-d: ${photo.position.desktop}`}
+              style={`--pos-m: ${photo.position.mobile}; --pos-d: ${photo.position.desktop}; --reveal-delay: ${i * 160}ms`}
             >
               <Picture
                 src={photo.src}
@@ -63,7 +64,7 @@ const sizes: Record<PhotoId, string> = {
             </div>
           ))}
 
-          <div class="vida__note on-dark">
+          <div class="vida__note on-dark" data-reveal="zoom" style="--reveal-delay:250ms">
             <BuffaloMark class="vida__note-mark" color="currentColor" />
             <p class="vida__note-text">Acompanhe as turmas, as atividades e as novidades da escola.</p>
             <a class="vida__note-link" href={contact.instagramUrl} target="_blank" rel="noopener noreferrer">

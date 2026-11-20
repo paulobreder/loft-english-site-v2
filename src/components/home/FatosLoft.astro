@@ -50,10 +50,10 @@ const pontos: Ponto[] = [
 
 <section class="section fatos" aria-labelledby="fatos-title">
   <div class="container">
-    <h2 id="fatos-title" class="fatos__titulo">Como a Loft ajuda você a avançar</h2>
+    <h2 id="fatos-title" class="fatos__titulo" data-reveal>Como a Loft ajuda você a avançar</h2>
 
     <div class="fatos__hub">
-      <div class="fatos__mascote">
+      <div class="fatos__mascote" data-reveal="zoom" style="--reveal-delay:150ms">
         <span class="fatos__orbita" aria-hidden="true"></span>
         <Mascote variante="circulo" largura={420} />
         <span class="fatos__balao" aria-hidden="true" lang="en">Let’s go!</span>
@@ -61,8 +61,8 @@ const pontos: Ponto[] = [
 
       <ul class="fatos__lista">
         {
-          pontos.map((p) => (
-            <li class="fato">
+          pontos.map((p, i) => (
+            <li class="fato" data-reveal={i % 2 === 0 ? 'left' : 'right'} style={`--reveal-delay:${350 + i * 140}ms`}>
               <span class="fato__icon" style={`background:${p.tom}`}>
                 <Icon name={p.icon} size={20} />
               </span>

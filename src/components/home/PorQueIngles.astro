@@ -53,15 +53,15 @@ const itens: { img: ImageMetadata; alt: string; pos: string; titulo: string; sub
 <section class="section porque" aria-labelledby="porque-title">
   <div class="container">
     <div class="porque__head">
-      <p class="eyebrow">Por que aprender inglês?</p>
-      <h2 id="porque-title">Um idioma que abre portas em todas as fases.</h2>
+      <p class="eyebrow" data-reveal>Por que aprender inglês?</p>
+      <h2 id="porque-title" data-reveal style="--reveal-delay:120ms">Um idioma que abre portas em todas as fases.</h2>
     </div>
 
     <ul class="porque__grid">
       {
         itens.map((i, n) => (
           <li class:list={['arco-card', n % 2 === 1 && 'arco-card--desce']}>
-            <div class="arco-card__img media-fill">
+            <div class="arco-card__img media-fill" data-reveal="arco" style={`--reveal-delay:${(n % 2) * 160}ms`}>
               <Picture
                 src={i.img}
                 alt={i.alt}
@@ -74,7 +74,7 @@ const itens: { img: ImageMetadata; alt: string; pos: string; titulo: string; sub
                 style={`object-position:${i.pos}`}
               />
             </div>
-            <div class="arco-card__texto">
+            <div class="arco-card__texto" data-reveal style={`--reveal-delay:${(n % 2) * 160 + 350}ms`}>
               <h3>{i.titulo}</h3>
               <p class="arco-card__sub">{i.subtitulo}</p>
               <p>{i.texto}</p>
@@ -84,7 +84,7 @@ const itens: { img: ImageMetadata; alt: string; pos: string; titulo: string; sub
       }
     </ul>
 
-    <a class="arrow-link porque__link" href={url('/cursos/')}>
+    <a class="arrow-link porque__link" href={url('/cursos/')} data-reveal>
       Encontre o curso para a sua fase <Icon name="arrow-right" size={18} />
     </a>
   </div>

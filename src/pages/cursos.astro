@@ -51,6 +51,7 @@ const detailLabels = {
             <div class="container course__grid">
               <div
                 class="course__visual media-fill"
+                data-reveal="foto"
                 style={course.image ? `--pos-m: ${course.image.position?.mobile ?? '50% 50%'}; --pos-d: ${course.image.position?.desktop ?? '50% 50%'}` : undefined}
               >
                 {course.image ? (
@@ -76,7 +77,7 @@ const detailLabels = {
                 )}
               </div>
 
-              <div class="course__content">
+              <div class="course__content" data-reveal style="--reveal-delay:200ms">
                 <p class="eyebrow">{course.audience}</p>
                 <h2 id={`${course.id}-title`}>
                   <span lang="en">{course.name}</span>

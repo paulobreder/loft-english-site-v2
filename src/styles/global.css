@@ -309,3 +309,77 @@ button {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ==========================================================================
+   Revelação ao rolar (inspirada na Overlake): os elementos entram na tela
+   conforme a página desce. Marque com data-reveal="up|left|right|zoom|arco|foto"
+   e, para escalonar, style="--reveal-delay:120ms".
+   - Só ativa com JS (classe .reveal-on, script em BaseLayout) e sem
+     prefers-reduced-motion: sem JS ou com movimento reduzido, tudo aparece normal.
+   - Usa animation com fill "backwards": ao terminar, o elemento volta aos próprios
+     estilos (hover e transform dos componentes continuam funcionando).
+   ========================================================================== */
+:root {
+  --reveal-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --reveal-dur: 0.95s;
+}
+
+.reveal-on [data-reveal]:not(.is-visible) {
+  opacity: 0;
+}
+
+.reveal-on [data-reveal].is-visible {
+  animation: reveal-up var(--reveal-dur) var(--reveal-ease) var(--reveal-delay, 0ms) backwards;
+}
+
+.reveal-on [data-reveal='left'].is-visible { animation-name: reveal-left; }
+.reveal-on [data-reveal='right'].is-visible { animation-name: reveal-right; }
+.reveal-on [data-reveal='zoom'].is-visible { animation-name: reveal-zoom; animation-duration: 1.1s; }
+.reveal-on [data-reveal='arco'].is-visible { animation-name: reveal-arco; animation-duration: 1.25s; }
+.reveal-on [data-reveal='foto'].is-visible { animation-name: reveal-arco; animation-duration: 1.25s; }
+
+/* Foto: além da cortina, a imagem "assenta" com um leve zoom */
+.reveal-on [data-reveal='foto'].is-visible img,
+.reveal-on [data-reveal='arco'].is-visible img {
+  animation: reveal-assenta 1.8s var(--reveal-ease) var(--reveal-delay, 0ms) backwards;
+}
+
+/* No celular, entradas laterais viram verticais (evita rolagem horizontal) */
+@media (max-width: 47.99rem) {
+  .reveal-on [data-reveal='left'].is-visible,
+  .reveal-on [data-reveal='right'].is-visible {
+    animation-name: reveal-up;
+  }
+}
+
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(2.5rem); }
+}
+
+@keyframes reveal-left {
+  from { opacity: 0; transform: translateX(-3rem); }
+}
+
+@keyframes reveal-right {
+  from { opacity: 0; transform: translateX(3rem); }
+}
+
+@keyframes reveal-zoom {
+  from { opacity: 0; transform: scale(0.82) rotate(-4deg); }
+}
+
+@keyframes reveal-arco {
+  from { opacity: 0.4; clip-path: inset(100% 0 0 0); }
+  to { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+
+@keyframes reveal-assenta {
+  from { transform: scale(1.14); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on [data-reveal] {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+}

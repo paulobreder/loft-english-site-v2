@@ -95,8 +95,8 @@ const mapLink = contact.mapsUrl
     <div class="container contact__grid">
       <ul class="channels">
         {
-          channels.map((c) => (
-            <li class:list={['channel', c.primary && 'channel--primary on-dark']}>
+          channels.map((c, i) => (
+            <li class:list={['channel', c.primary && 'channel--primary on-dark']} data-reveal style={`--reveal-delay:${i * 130}ms`}>
               {c.primary && <BuffaloMark class="channel__mark" color="currentColor" />}
               {c.href ? (
                 <a
@@ -137,7 +137,7 @@ const mapLink = contact.mapsUrl
         }
       </ul>
 
-      <aside class="place" aria-labelledby="place-title">
+      <aside class="place" aria-labelledby="place-title" data-reveal="zoom" style="--reveal-delay:200ms">
         <figure class="place__map media-fill">
           <Picture
             src={cityMap}

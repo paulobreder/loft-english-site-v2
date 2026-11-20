@@ -74,7 +74,8 @@ Atende ao feedback da proprietária (`06_CONTEUDOS_PLANEJADOS/FEEDBACK-PROPRIETA
 | Mascote | Búfalo ilustrado (2 versões) com movimento suave, em Sobre nós, "em poucas palavras" e na chamada final; parado com redução de movimento |
 | Barra superior | Faixa vermelha com "inglês americano" e Instagram |
 | Cursos | Cards com rodapé colorido (vermelho, vermelho profundo, azul) |
-| Sobre nós | Colagem: foto da turma + mapa com faixa "São Gabriel da Palha" + mascote; pilar "Inglês americano" |
+| Sobre nós | Colagem: foto da turma + mapa ilustrado de São Gabriel da Palha (provisório, gerado; o marcador é ilustrativo, não indica endereço) + mascote; pilar "Inglês americano" |
+| Animação ao rolar | Elementos entram conforme a rolagem (como na Overlake): `data-reveal` em `global.css` + script em `BaseLayout`. Sem JS ou com "reduzir movimento", tudo aparece direto |
 | Pontos fortes | "Como a Loft ajuda você a avançar": American English, método próprio, aprender junto, na sua cidade, com o búfalo maior no centro |
 | Manifesto | Faixa listrada vermelha com cantão de estrelas e o slogan *opening the world for you* |
 | Por que aprender inglês | Cards com imagem de topo em arco (1,1:1), ritmo desalinhado; imagens de apoio provisórias (abaixo) |

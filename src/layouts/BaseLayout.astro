@@ -56,6 +56,34 @@ const isHome = routePath(Astro.url.pathname) === '/';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      /* Revelação ao rolar: liga só com JS e sem "reduzir movimento" (ver global.css). */
+      (() => {
+        if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        document.documentElement.classList.add('reveal-on');
+        const iniciar = () => {
+          const io = new IntersectionObserver(
+            (entradas) => {
+              for (const e of entradas) {
+                if (e.isIntersecting) {
+                  e.target.classList.add('is-visible');
+                  io.unobserve(e.target);
+                }
+              }
+            },
+            { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+          );
+          document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+          // Ao receber foco pelo teclado, o elemento aparece na hora.
+          document.addEventListener('focusin', (ev) => {
+            const alvo = ev.target instanceof Element && ev.target.closest('[data-reveal]:not(.is-visible)');
+            if (alvo) alvo.classList.add('is-visible');
+          });
+        };
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);
+        else iniciar();
+      })();
+    </script>
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content={robots} />

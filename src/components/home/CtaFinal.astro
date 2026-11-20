@@ -15,25 +15,25 @@ const cta = primaryContact();
     <Picture src={fotoAula} alt="" formats={['avif', 'webp']} fallbackFormat="jpg" quality={60} widths={[800, 1280, 1920]} sizes="100vw" loading="lazy" />
   </div>
   <div class="container cta-final__inner">
-    <h2 id="cta-final-title">Comece agora a sua jornada no inglês.</h2>
-    <p>Tire suas dúvidas sobre os cursos e encontre o melhor caminho para começar.</p>
+    <h2 id="cta-final-title" data-reveal>Comece agora a sua jornada no inglês.</h2>
+    <p data-reveal style="--reveal-delay:120ms">Tire suas dúvidas sobre os cursos e encontre o melhor caminho para começar.</p>
     <div class="cta-final__botoes">
-      <a class="cta-tile cta-tile--vermelho" href={url('/cursos/')}>
+      <a data-reveal style="--reveal-delay:240ms" class="cta-tile cta-tile--vermelho" href={url('/cursos/')}>
         <Icon name="book-open" size={20} />
         <span>Conheça os cursos</span>
       </a>
-      <a class="cta-tile cta-tile--profundo" href={cta.href} target="_blank" rel="noopener noreferrer">
+      <a data-reveal style="--reveal-delay:360ms" class="cta-tile cta-tile--profundo" href={cta.href} target="_blank" rel="noopener noreferrer">
         <Icon name={cta.channel === 'whatsapp' ? 'whatsapp' : 'instagram'} size={20} />
         <span>{cta.label}</span>
         <span class="visually-hidden"> (abre em nova aba)</span>
       </a>
-      <a class="cta-tile cta-tile--azul" href={url('/contato/')}>
+      <a data-reveal style="--reveal-delay:480ms" class="cta-tile cta-tile--azul" href={url('/contato/')}>
         <Icon name="map-pin" size={20} />
         <span>Onde estamos</span>
       </a>
     </div>
   </div>
-  <Mascote variante="corpo" largura={300} espelhar class="cta-final__mascote" />
+  <Mascote variante="corpo" largura={300} espelhar class="cta-final__mascote" reveal="right" revealDelay={500} />
 </section>
 
 <style>

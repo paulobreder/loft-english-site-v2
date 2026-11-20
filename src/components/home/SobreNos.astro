@@ -7,7 +7,7 @@
 import { Picture } from 'astro:assets';
 import Mascote from '../Mascote.astro';
 import fotoTurma from '../../assets/images/escola/selfie-turma.png';
-import mapaCidade from '../../assets/images/mapa-sao-gabriel-da-palha-azul.png';
+import mapaCidade from '../../assets/images/mapa-ilustrado-sao-gabriel-da-palha.webp';
 import Icon from '../Icon.astro';
 import { site } from '../../config/site';
 import { pilares, historia, missao, equipe } from '../../data/institucional/sobre';
@@ -21,7 +21,7 @@ const temExtras = Boolean(historia || missao || equipe.length);
   <div class="container">
     <div class="sobre__grid">
       <div class="colagem">
-        <div class="colagem__foto media-fill">
+        <div class="colagem__foto media-fill" data-reveal="foto">
           <Picture
             src={fotoTurma}
             alt="Professor faz uma selfie sorridente com a turma reunida ao redor da mesa de aula"
@@ -33,25 +33,24 @@ const temExtras = Boolean(historia || missao || equipe.length);
             loading="lazy"
           />
         </div>
-        <div class="colagem__mapa media-fill">
+        <div class="colagem__mapa media-fill" data-reveal="zoom" style="--reveal-delay:350ms">
           <Picture
             src={mapaCidade}
-            alt={`Mapa ilustrativo da área central de ${site.city}`}
+            alt={`Mapa ilustrado de ${site.city}, com o monumento da cidade, o rio e um marcador da Loft English (ilustração, sem escala)`}
             formats={['avif', 'webp']}
             fallbackFormat="jpg"
             quality={80}
-            widths={[360, 540]}
-            sizes="(min-width: 64rem) 20vw, 50vw"
+            widths={[360, 540, 720]}
+            sizes="(min-width: 64rem) 22vw, 55vw"
             loading="lazy"
           />
-          <span class="colagem__faixa">{site.city}</span>
         </div>
-        <Mascote variante="corpo" largura={260} class="colagem__mascote" />
+        <Mascote variante="corpo" largura={260} class="colagem__mascote" reveal="left" revealDelay={650} />
       </div>
       <div class="sobre__content">
-        <p class="eyebrow">Sobre nós</p>
-        <h2 id="sobre-title">Conheça a Loft English.</h2>
-        <p class="sobre__text">
+        <p class="eyebrow" data-reveal>Sobre nós</p>
+        <h2 id="sobre-title" data-reveal style="--reveal-delay:100ms">Conheça a Loft English.</h2>
+        <p class="sobre__text" data-reveal style="--reveal-delay:200ms">
           A Loft English é uma escola de inglês em {site.city}, no {site.stateName}, com cursos voltados para crianças,
           adolescentes e adultos. Seu convite é abrir caminhos para usar o idioma na vida — como diz a assinatura da marca,{' '}
           <em lang="en">“{site.slogan}”</em>.
@@ -59,8 +58,8 @@ const temExtras = Boolean(historia || missao || equipe.length);
 
         <ul class="pilares">
           {
-            pilares.map((p) => (
-              <li class="pilar">
+            pilares.map((p, i) => (
+              <li class="pilar" data-reveal="right" style={`--reveal-delay:${150 + i * 120}ms`}>
                 <span class="pilar__icon">
                   <Icon name={p.icon} size={22} />
                 </span>
@@ -75,7 +74,7 @@ const temExtras = Boolean(historia || missao || equipe.length);
           }
         </ul>
 
-        <a class="arrow-link" href={url('/contato/')}>
+        <a class="arrow-link" href={url('/contato/')} data-reveal>
           Fale com a escola <Icon name="arrow-right" size={18} />
         </a>
       </div>
@@ -281,7 +280,7 @@ const temExtras = Boolean(historia || missao || equipe.length);
   .colagem {
     position: relative;
     display: grid;
-    grid-template-columns: 1fr 0.9fr;
+    grid-template-columns: 0.55fr 1fr;
     padding-bottom: var(--sp-6);
   }
 
@@ -305,7 +304,7 @@ const temExtras = Boolean(historia || missao || equipe.length);
     overflow: visible;
     border: 6px solid #fff;
     box-shadow: var(--shadow-2);
-    background: #eaf1fc;
+    background: #f6e3c4;
   }
 
   .colagem__mapa > :global(picture) {
@@ -313,21 +312,10 @@ const temExtras = Boolean(historia || missao || equipe.length);
     overflow: hidden;
   }
 
-  .colagem__faixa {
-    position: absolute;
-    right: 18%;
-    bottom: 16%;
-    z-index: 1;
-    padding: 0.5rem 1.5rem;
-    background: var(--brand-red);
-    color: #fff;
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-size: clamp(0.875rem, 0.7rem + 0.6vw, 1.125rem);
-    white-space: nowrap;
-    transform: rotate(-7deg);
-    clip-path: polygon(0 0, 100% 0, 94% 50%, 100% 100%, 0 100%, 6% 50%);
-    box-shadow: var(--shadow-1);
+  @media (min-width: 48rem) {
+    .colagem {
+      grid-template-columns: 0.85fr 1fr;
+    }
   }
 
   .colagem :global(.colagem__mascote) {

@@ -47,14 +47,20 @@ const steps = [
   <section class="section audiences" aria-labelledby="aud-title">
     <div class="container">
       <div class="audiences__head">
-        <div class="section-head">
+        <div class="section-head" data-reveal>
           <p class="eyebrow">Cursos</p>
           <h2 id="aud-title">Cada fase tem seu jeito de aprender.</h2>
         </div>
-        <p class="lead">Conheça as opções da Loft English para diferentes momentos da vida e encontre o seu caminho no inglês.</p>
+        <p class="lead" data-reveal style="--reveal-delay:150ms">Conheça as opções da Loft English para diferentes momentos da vida e encontre o seu caminho no inglês.</p>
       </div>
       <div class="audiences__grid">
-        {courses.map((course, i) => <AudienceCard course={course} index={i} />)}
+        {
+          courses.map((course, i) => (
+            <div class="audiences__item" data-reveal style={`--reveal-delay:${i * 130}ms`}>
+              <AudienceCard course={course} index={i} />
+            </div>
+          ))
+        }
       </div>
     </div>
   </section>
@@ -66,12 +72,12 @@ const steps = [
   <!-- Manifesto -->
   <section class="statement" aria-labelledby="statement-title">
     <div class="container statement__inner">
-      <p class="statement__label">Como a Loft English se apresenta</p>
-      <h2 id="statement-title" class="statement__quote">
+      <p class="statement__label" data-reveal>Como a Loft English se apresenta</p>
+      <h2 id="statement-title" class="statement__quote" data-reveal style="--reveal-delay:120ms">
         Inglês de verdade, <span>para a vida.</span>
       </h2>
-      <p class="statement__sub">Fale inglês com confiança.</p>
-      <p class="statement__slogan" lang="en">{site.slogan}</p>
+      <p class="statement__sub" data-reveal style="--reveal-delay:280ms">Fale inglês com confiança.</p>
+      <p class="statement__slogan" lang="en" data-reveal style="--reveal-delay:420ms">{site.slogan}</p>
     </div>
   </section>
 
@@ -86,14 +92,14 @@ const steps = [
   <!-- Como começar -->
   <section class="section section--alt steps" aria-labelledby="steps-title">
     <div class="container">
-      <div class="section-head">
+      <div class="section-head" data-reveal>
         <p class="eyebrow">Primeiros passos</p>
         <h2 id="steps-title">Como começar na Loft English.</h2>
       </div>
       <ol class="steps__list">
         {
           steps.map((step, i) => (
-            <li class="step">
+            <li class="step" data-reveal style={`--reveal-delay:${i * 130}ms`}>
               <span class="step__num" aria-hidden="true">
                 {String(i + 1).padStart(2, '0')}
               </span>
@@ -119,12 +125,14 @@ const steps = [
   <!-- Dúvidas -->
   <section class="section faq-section" aria-labelledby="faq-title">
     <div class="container faq-section__grid">
-      <div class="section-head faq-section__head">
+      <div class="section-head faq-section__head" data-reveal>
         <p class="eyebrow">Dúvidas</p>
         <h2 id="faq-title">Antes de começar.</h2>
         <p class="lead">Respostas diretas para as perguntas mais comuns. Para detalhes de turmas e valores, fale com a equipe.</p>
       </div>
-      <Faq items={faq} />
+      <div data-reveal style="--reveal-delay:150ms">
+        <Faq items={faq} />
+      </div>
     </div>
   </section>
 
@@ -146,6 +154,10 @@ const steps = [
   .audiences__grid {
     display: grid;
     gap: var(--sp-4);
+  }
+
+  .audiences__item {
+    display: grid;
   }
 
   @media (min-width: 48rem) {
