@@ -11,6 +11,7 @@ const nav = [
   { label: 'Início', href: url('/'), match: (p: string) => p === '/' },
   { label: 'Cursos', href: url('/cursos/'), match: (p: string) => p.startsWith('/cursos') },
   { label: 'Sobre nós', href: url('/#sobre-nos'), match: () => false },
+  { label: 'Equipe', href: url('/equipe/'), match: (p: string) => p.startsWith('/equipe') },
   { label: 'Contato', href: url('/contato/'), match: (p: string) => p.startsWith('/contato') },
 ];
 ---

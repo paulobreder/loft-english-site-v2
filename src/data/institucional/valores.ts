@@ -7,12 +7,12 @@
  * Sem o rótulo "imagem ilustrativa" (pedido do responsável, 20/11/2026). Foto real autorizada pode substituí-la trocando só o import.
  */
 import type { ImageMetadata } from 'astro';
-// 1 e 2: imagens geradas (ilustrativas). 3 e 4: fotos reais da Loft (Instagram), com alunos
-// menores de idade — publicar só com autorização de uso de imagem (ver docs/STATUS.md).
+// 1, 2 e 4: imagens geradas. 3: foto real da Loft (Instagram), com alunos menores — autorização
+// confirmada em 20/11/2026 (ver 06_CONTEUDOS_PLANEJADOS/MANIFESTO-DE-ASSETS.md).
 import confianca from '../../assets/images/valores/confianca.webp';
 import curiosidade from '../../assets/images/valores/curiosidade.webp';
 import acolhimento from '../../assets/images/valores/acolhimento-foto-loft.webp';
-import alegria from '../../assets/images/valores/alegria-foto-loft.webp';
+import alegria from '../../assets/images/valores/alegria.jpg'; // ampliada 2x com realce local (Core Image), 21/11/2026
 
 export interface Valor {
   id: string;
@@ -66,7 +66,7 @@ export const valores: Valor[] = [
     ingles: 'Fun',
     texto: 'Atividades, jogos e momentos especiais tornam o inglês parte da rotina, dentro e fora da sala de aula.',
     img: alegria,
-    alt: 'Alunas, aluno e professora sorriem juntos em uma comemoração com bolo na Loft English',
-    pos: '50% 30%',
+    alt: 'Menino de camisa polo vermelha sorri para a câmera durante uma atividade de pintura em sala',
+    pos: '50% 32%',
   },
 ];

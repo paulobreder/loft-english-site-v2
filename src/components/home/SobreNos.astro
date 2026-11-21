@@ -74,9 +74,14 @@ const temExtras = Boolean(historia || missao || equipe.length);
           }
         </ul>
 
-        <a class="arrow-link" href={url('/contato/')} data-reveal>
-          Fale com a escola <Icon name="arrow-right" size={18} />
-        </a>
+        <div class="sobre__links" data-reveal>
+          <a class="arrow-link" href={url('/equipe/')}>
+            Conheça a equipe <Icon name="arrow-right" size={18} />
+          </a>
+          <a class="arrow-link" href={url('/contato/')}>
+            Fale com a escola <Icon name="arrow-right" size={18} />
+          </a>
+        </div>
       </div>
     </div>
 
@@ -274,6 +279,12 @@ const temExtras = Boolean(historia || missao || equipe.length);
     .sobre__equipe {
       grid-column: 1 / -1;
     }
+  }
+
+  .sobre__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3) var(--sp-7);
   }
 
   /* ---------- v2: colagem com mapa e mascote ---------- */
