@@ -14,6 +14,8 @@
  */
 import type { ImageMetadata } from 'astro';
 import sofia from '../../assets/images/depoimentos/sofia-demonstrativo.webp';
+// Foto de turma que ocupa metade da seção (PROVISÓRIA até chegar a imagem de apoio definitiva).
+import fotoTurma from '../../assets/images/escola/aula-coletiva.png';
 
 export type StatusDepoimento = 'real' | 'demonstrativo';
 export type Fase = 'Kids' | 'Teens' | 'Adults';
@@ -33,10 +35,15 @@ export interface Depoimento {
   textoPt: string;
   /** Versão em inglês (opcional): habilita o botão "English". */
   textoEn?: string;
+  /** Retrato do aluno (aparece pequeno, em círculo, junto do nome). */
   foto?: ImageMetadata;
   fotoAlt?: string;
-  /** object-position da foto. */
+  /** object-position do retrato. */
   fotoPos?: string;
+  /** Foto de ambiente que ocupa metade da seção; se omitida, usa `fundoPadrao`. */
+  fundo?: ImageMetadata;
+  fundoAlt?: string;
+  fundoPos?: string;
   /** Gravação em áudio (arquivo em /public). Só renderiza com `src`. */
   audio?: { src: string; tipo?: string; transcricao?: string };
   /** Depoimento em vídeo (arquivo em /public). Só renderiza com `src`. */
@@ -52,11 +59,18 @@ export const depoimentos: Depoimento[] = [
     idade: 15,
     nivel: 'Inglês avançado',
     textoPt:
-      'Antes, eu tinha medo de falar inglês e errar. Na Loft, aprendi que errar também faz parte do aprendizado. Hoje, consigo assistir a séries sem legenda, conversar em inglês e me sentir muito mais confiante. Aprender outro idioma me mostrou que o mundo é muito maior do que eu imaginava.',
+      'Eu tinha medo de errar ao falar inglês. Na Loft, aprendi que errar faz parte. Hoje assisto a séries sem legenda e converso com muito mais confiança.',
     textoEn:
-      'I used to be afraid of speaking English and making mistakes. At Loft, I learned that making mistakes is part of learning. Now, I can watch shows without subtitles, have conversations in English and feel much more confident. Learning another language has opened up a whole new world for me.',
+      'I used to be afraid of making mistakes in English. At Loft, I learned that mistakes are part of learning. Now I watch shows without subtitles and speak with much more confidence.',
     foto: sofia,
     fotoAlt: 'Retrato de Sofia, de camiseta branca, sorrindo diante da parede vermelha da Loft English',
-    fotoPos: '50% 30%',
+    fotoPos: '50% 28%',
   },
 ];
+
+/** Foto de turma usada quando o depoimento não define `fundo`. */
+export const fundoPadrao = {
+  img: fotoTurma,
+  alt: 'Turma da Loft English em aula, com a professora à frente da sala',
+  pos: '50% 45%',
+};

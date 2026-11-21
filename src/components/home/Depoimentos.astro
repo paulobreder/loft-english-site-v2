@@ -8,7 +8,7 @@
  */
 import { Picture } from 'astro:assets';
 import Icon from '../Icon.astro';
-import { depoimentos } from '../../data/institucional/depoimentos';
+import { depoimentos, fundoPadrao } from '../../data/institucional/depoimentos';
 import { isProductionSite } from '../../config/site';
 
 const itens = depoimentos.filter((d) => (d.status === 'real' ? d.autorizado : !isProductionSite));
@@ -56,6 +56,21 @@ const descricao = (d: (typeof itens)[number]) =>
               </blockquote>
 
               <div class="depo__rodape">
+                {d.foto && (
+                  <div class="depo__avatar media-fill">
+                    <Picture
+                      src={d.foto}
+                      alt={d.fotoAlt ?? `Retrato de ${d.nome}`}
+                      formats={['avif', 'webp']}
+                      fallbackFormat="jpg"
+                      quality={80}
+                      widths={[96, 192]}
+                      sizes="96px"
+                      loading="lazy"
+                      style={d.fotoPos ? `object-position:${d.fotoPos}` : undefined}
+                    />
+                  </div>
+                )}
                 <p class="depo__autor">
                   <strong>{d.nome}</strong>
                   {descricao(d) && <span>{descricao(d)}</span>}
@@ -97,21 +112,19 @@ const descricao = (d: (typeof itens)[number]) =>
               )}
             </div>
 
-            {d.foto && (
-              <div class="depo__foto media-fill">
-                <Picture
-                  src={d.foto}
-                  alt={d.fotoAlt ?? `Retrato de ${d.nome}`}
-                  formats={['avif', 'webp']}
-                  fallbackFormat="jpg"
-                  quality={78}
-                  widths={[480, 720, 1000]}
-                  sizes="(min-width: 64rem) 34rem, 92vw"
-                  loading="lazy"
-                  style={d.fotoPos ? `object-position:${d.fotoPos}` : undefined}
-                />
-              </div>
-            )}
+            <div class="depo__fundo media-fill">
+              <Picture
+                src={d.fundo ?? fundoPadrao.img}
+                alt={d.fundo ? (d.fundoAlt ?? '') : fundoPadrao.alt}
+                formats={['avif', 'webp']}
+                fallbackFormat="jpg"
+                quality={72}
+                widths={[640, 960, 1280]}
+                sizes="(min-width: 64rem) 50vw, 100vw"
+                loading="lazy"
+                style={`object-position:${d.fundo ? (d.fundoPos ?? '50% 50%') : fundoPadrao.pos}`}
+              />
+            </div>
           </article>
         ))}
 
@@ -191,7 +204,7 @@ const descricao = (d: (typeof itens)[number]) =>
   }
 
   .depo__cabeca {
-    padding: clamp(1.75rem, 1rem + 3vw, 3.5rem) clamp(1.25rem, 0.5rem + 4vw, 5rem) 0;
+    padding: clamp(1.75rem, 1rem + 3vw, 3.5rem) clamp(1.25rem, 0.5rem + 4vw, 5rem) var(--sp-5);
   }
 
   .depo__titulo {
@@ -259,9 +272,9 @@ const descricao = (d: (typeof itens)[number]) =>
   }
 
   .depo__citacao p {
-    max-width: 40ch;
+    max-width: 30ch;
     font-family: var(--font-display);
-    font-size: clamp(1.125rem, 0.95rem + 0.8vw, 1.625rem);
+    font-size: clamp(1.375rem, 1rem + 1.3vw, 2.125rem);
     font-weight: 600;
     line-height: 1.35;
     letter-spacing: -0.015em;
@@ -369,14 +382,34 @@ const descricao = (d: (typeof itens)[number]) =>
     border-radius: var(--r-lg);
   }
 
-  /* ---------- Foto ---------- */
-  .depo__foto {
-    order: -1;
-    aspect-ratio: 1;
-    margin: var(--sp-5) var(--sp-5) 0;
-    border-radius: var(--r-xl) var(--r-xl) 999px 999px;
+  /* ---------- Avatar do aluno ---------- */
+  .depo__avatar {
+    flex: none;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
     overflow: hidden;
+    border: 3px solid #fff;
     background: var(--brand-red);
+  }
+
+  /* ---------- Foto da turma (metade da seção) com véu vermelho ---------- */
+  .depo__fundo {
+    position: relative;
+    order: -1;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--brand-red-deep);
+  }
+
+  .depo__fundo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, transparent 55%, var(--brand-red-deep) 100%),
+      rgb(142 0 18 / 0.55);
+    mix-blend-mode: multiply;
   }
 
   /* ---------- Vários depoimentos ---------- */
@@ -434,11 +467,11 @@ const descricao = (d: (typeof itens)[number]) =>
     background: #fff;
   }
 
-  /* ---------- Desktop: texto à esquerda, foto em "D" à direita ---------- */
+  /* ---------- Desktop: texto à esquerda, turma ocupando a metade direita ---------- */
   @media (min-width: 64rem) {
     .depo__item {
-      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-      min-height: 34rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      min-height: 36rem;
     }
 
     .depo__texto {
@@ -446,11 +479,15 @@ const descricao = (d: (typeof itens)[number]) =>
       padding-top: calc(var(--fs-md) * 1.5 + clamp(2.5rem, 1.5rem + 3vw, 4.5rem));
     }
 
-    .depo__foto {
+    .depo__fundo {
       order: 0;
       aspect-ratio: auto;
-      margin: 0;
-      border-radius: 45% 0 0 45% / 50% 0 0 50%;
+    }
+
+    .depo__fundo::after {
+      background:
+        linear-gradient(90deg, var(--brand-red-deep) 0%, transparent 22%),
+        rgb(142 0 18 / 0.55);
     }
 
     .depo__cabeca {
@@ -458,6 +495,8 @@ const descricao = (d: (typeof itens)[number]) =>
       top: 0;
       left: 0;
       z-index: 1;
+      width: 50%;
+      padding-bottom: 0;
     }
   }
 </style>
