@@ -70,7 +70,6 @@ const year = new Date().getFullYear();
 
     <div class="site-footer__bottom">
       <p>© {year} {site.name}. Todos os direitos reservados.</p>
-      <p class="site-footer__note">As fotografias da página inicial e de cursos são imagens ilustrativas.</p>
       <a href={url('/privacidade/')}>Privacidade</a>
     </div>
   </div>
@@ -156,10 +155,6 @@ const year = new Date().getFullYear();
     gap: var(--sp-2) var(--sp-6);
     padding-top: var(--sp-5);
     font-size: var(--fs-xs);
-  }
-
-  .site-footer__note {
-    flex: 1 1 16rem;
   }
 
   @media (min-width: 48rem) {

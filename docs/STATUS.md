@@ -76,6 +76,7 @@ Atende ao feedback da proprietária (`06_CONTEUDOS_PLANEJADOS/FEEDBACK-PROPRIETA
 | Cursos | Cards com rodapé colorido (vermelho, vermelho profundo, azul) |
 | Sobre nós | Colagem: foto da turma + mapa ilustrado de São Gabriel da Palha (provisório, gerado; o marcador é ilustrativo, não indica endereço) + mascote; pilar "Inglês americano" |
 | Carrossel de valores | "O que faz a Loft ser a Loft" após a faixa listrada: Confiança, Curiosidade, Acolhimento, Alegria de aprender (valores a validar com a proprietária). Imagens 1–2 geradas; 3–4 fotos reais da Loft com autorização confirmada em 20/11/2026 |
+| Rótulo "imagem ilustrativa" | Removido de todo o site (rodapé e textos alternativos) a pedido do responsável em 21/11/2026. As imagens geradas continuam sem ser apresentadas como alunos reais |
 | Animação ao rolar | Elementos entram conforme a rolagem (como na Overlake): `data-reveal` em `global.css` + script em `BaseLayout`. Sem JS ou com "reduzir movimento", tudo aparece direto |
 | Pontos fortes | "Como a Loft ajuda você a avançar": American English, método próprio, aprender junto, na sua cidade, com o búfalo maior no centro |
 | Manifesto | Faixa listrada vermelha com cantão de estrelas e o slogan *opening the world for you* |

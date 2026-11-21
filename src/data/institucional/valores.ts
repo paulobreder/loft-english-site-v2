@@ -9,8 +9,8 @@
 import type { ImageMetadata } from 'astro';
 // 1 e 2: imagens geradas (ilustrativas). 3 e 4: fotos reais da Loft (Instagram), com alunos
 // menores de idade — publicar só com autorização de uso de imagem (ver docs/STATUS.md).
-import confianca from '../../assets/images/valores/confianca-ilustrativa.webp';
-import curiosidade from '../../assets/images/valores/curiosidade-ilustrativa.webp';
+import confianca from '../../assets/images/valores/confianca.webp';
+import curiosidade from '../../assets/images/valores/curiosidade.webp';
 import acolhimento from '../../assets/images/valores/acolhimento-foto-loft.webp';
 import alegria from '../../assets/images/valores/alegria-foto-loft.webp';
 

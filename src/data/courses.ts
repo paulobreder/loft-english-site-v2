@@ -5,7 +5,7 @@
  * quando preenchidos, aparecem automaticamente na página /cursos/.
  *
  * `image`: fotos dos cursos (src/assets/images/cursos/). Imagens publicitárias geradas e
- * aprovadas pelo cliente em 16/11/2026 — ilustrativas, não alunos reais (o alt informa).
+ * aprovadas pelo cliente em 16/11/2026 — imagens geradas, não alunos reais (sem rótulo no site, a pedido do responsável em 21/11/2026).
  * Para voltar à versão tipográfica, troque `image` por `null`.
  * Para trocar por fotos reais da escola: substitua os arquivos e revise alt/position.
  * Fotos reais com menores exigem autorização dos responsáveis legais.
@@ -60,7 +60,7 @@ export const courses: Course[] = [
     icon: 'shapes',
     image: {
       src: kidsPhoto,
-      alt: 'Criança sorridente de cabelo cacheado e camisa polo vermelha em sala de aula (imagem ilustrativa)',
+      alt: 'Criança sorridente de cabelo cacheado e camisa polo vermelha em sala de aula',
       position: { card: '50% 58%', mobile: '50% 48%', desktop: '50% 70%' },
     },
     details: { ages: null, format: null, schedule: null },
@@ -76,7 +76,7 @@ export const courses: Course[] = [
     icon: 'backpack',
     image: {
       src: teensPhoto,
-      alt: 'Jovem estudante sorridente de blusa azul-marinho e mochila, segurando uma apostila da Loft English e um celular (imagem ilustrativa)',
+      alt: 'Jovem estudante sorridente de blusa azul-marinho e mochila, segurando uma apostila da Loft English e um celular',
       position: { card: '50% 45%', mobile: '50% 35%', desktop: '50% 50%' },
     },
     details: { ages: null, format: null, schedule: null },
@@ -92,7 +92,7 @@ export const courses: Course[] = [
     icon: 'messages-square',
     image: {
       src: adultsPhoto,
-      alt: 'Homem adulto estudando inglês à mesa, com caneca da Loft English e a bandeira do Reino Unido ao fundo (imagem ilustrativa)',
+      alt: 'Homem adulto estudando inglês à mesa, com caneca da Loft English e a bandeira do Reino Unido ao fundo',
       position: { card: '50% 30%', mobile: '50% 25%', desktop: '50% 35%' },
     },
     details: { ages: null, format: null, schedule: null },
