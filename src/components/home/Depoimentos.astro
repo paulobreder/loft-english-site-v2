@@ -1,0 +1,463 @@
+---
+/**
+ * Depoimentos — referência: bloco de depoimentos da Overlake (painel colorido + aspas + foto).
+ * Dados em src/data/institucional/depoimentos.ts.
+ * - Reais: só com `autorizado: true`. Demonstrativos: só nas prévias, com rótulo visível.
+ * - Botões PT/EN só quando há `textoEn`; setas/indicadores só com 2+ depoimentos;
+ *   áudio/vídeo só quando há arquivo. Sem rotação automática.
+ */
+import { Picture } from 'astro:assets';
+import Icon from '../Icon.astro';
+import { depoimentos } from '../../data/institucional/depoimentos';
+import { isProductionSite } from '../../config/site';
+
+const itens = depoimentos.filter((d) => (d.status === 'real' ? d.autorizado : !isProductionSite));
+const multiplos = itens.length > 1;
+
+const descricao = (d: (typeof itens)[number]) =>
+  [d.idade ? `${d.idade} anos` : null, d.fase ?? null].filter(Boolean).join(' · ');
+---
+
+{
+  itens.length > 0 && (
+    <section class="section depo" aria-labelledby="depo-title" data-depoimentos>
+      <div class="depo__frame" data-reveal>
+        <div class="depo__cabeca">
+          <h2 id="depo-title" class="depo__titulo">Quem estuda na Loft conta</h2>
+        </div>
+
+        {itens.map((d, i) => (
+          <article
+            class:list={['depo__item', i === 0 && 'is-ativo']}
+            data-depo-item
+            hidden={i !== 0}
+            aria-roledescription={multiplos ? 'slide' : undefined}
+            aria-label={multiplos ? `${i + 1} de ${itens.length}: ${d.nome}` : undefined}
+          >
+            <div class="depo__texto">
+              {d.status === 'demonstrativo' && (
+                <p class="depo__selo">
+                  <Icon name="help-circle" size={16} />
+                  Depoimento demonstrativo · conteúdo provisório
+                </p>
+              )}
+
+              <span class="depo__aspas" aria-hidden="true">
+                <Icon name="quote" size={30} strokeWidth={2} />
+              </span>
+
+              <blockquote class="depo__citacao">
+                <p lang="pt-BR" data-idioma="pt">“{d.textoPt}”</p>
+                {d.textoEn && (
+                  <p lang="en" data-idioma="en" hidden>
+                    “{d.textoEn}”
+                  </p>
+                )}
+              </blockquote>
+
+              <div class="depo__rodape">
+                <p class="depo__autor">
+                  <strong>{d.nome}</strong>
+                  {descricao(d) && <span>{descricao(d)}</span>}
+                </p>
+                {d.nivel && <span class="depo__nivel">{d.nivel}</span>}
+
+                {d.textoEn && (
+                  <div class="depo__idiomas" role="group" aria-label="Idioma do depoimento" hidden data-idiomas>
+                    <button type="button" class="depo__idioma" data-ver="pt" aria-pressed="true">
+                      Português
+                    </button>
+                    <button type="button" class="depo__idioma" data-ver="en" aria-pressed="false" lang="en">
+                      English
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {d.audio?.src && (
+                <figure class="depo__midia">
+                  <figcaption>Ouça o depoimento</figcaption>
+                  <audio controls preload="none">
+                    <source src={d.audio.src} type={d.audio.tipo ?? 'audio/mpeg'} />
+                  </audio>
+                  {d.audio.transcricao && (
+                    <details>
+                      <summary>Transcrição</summary>
+                      <p>{d.audio.transcricao}</p>
+                    </details>
+                  )}
+                </figure>
+              )}
+
+              {d.video?.src && (
+                <video class="depo__video" controls preload="none" poster={d.video.poster} aria-label={`Depoimento em vídeo de ${d.nome}`}>
+                  <source src={d.video.src} type={d.video.tipo ?? 'video/mp4'} />
+                  {d.video.legendasVtt && <track kind="captions" src={d.video.legendasVtt} srclang="pt-BR" label="Português" default />}
+                </video>
+              )}
+            </div>
+
+            {d.foto && (
+              <div class="depo__foto media-fill">
+                <Picture
+                  src={d.foto}
+                  alt={d.fotoAlt ?? `Retrato de ${d.nome}`}
+                  formats={['avif', 'webp']}
+                  fallbackFormat="jpg"
+                  quality={78}
+                  widths={[480, 720, 1000]}
+                  sizes="(min-width: 64rem) 34rem, 92vw"
+                  loading="lazy"
+                  style={d.fotoPos ? `object-position:${d.fotoPos}` : undefined}
+                />
+              </div>
+            )}
+          </article>
+        ))}
+
+        {multiplos && (
+          <div class="depo__controles" hidden data-controles>
+            <button type="button" class="depo__seta" data-ant aria-label="Depoimento anterior">
+              <Icon name="chevron-left" size={22} strokeWidth={2.25} />
+            </button>
+            <div class="depo__pontos">
+              {itens.map((d, i) => (
+                <button type="button" class="depo__ponto" data-ir={i} aria-label={`Mostrar depoimento de ${d.nome}`} aria-current={i === 0 ? 'true' : undefined} />
+              ))}
+            </div>
+            <button type="button" class="depo__seta" data-prox aria-label="Próximo depoimento">
+              <Icon name="chevron-right" size={22} strokeWidth={2.25} />
+            </button>
+          </div>
+        )}
+        <p class="visually-hidden" aria-live="polite" data-anuncio />
+      </div>
+    </section>
+  )
+}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-depoimentos]').forEach((raiz) => {
+    const itens = [...raiz.querySelectorAll<HTMLElement>('[data-depo-item]')];
+    const anuncio = raiz.querySelector<HTMLElement>('[data-anuncio]');
+
+    // Alternar Português / English em cada depoimento
+    itens.forEach((item) => {
+      const grupo = item.querySelector<HTMLElement>('[data-idiomas]');
+      if (!grupo) return;
+      grupo.hidden = false;
+      grupo.querySelectorAll<HTMLButtonElement>('[data-ver]').forEach((btn) =>
+        btn.addEventListener('click', () => {
+          const alvo = btn.dataset.ver;
+          item.querySelectorAll<HTMLElement>('[data-idioma]').forEach((p) => (p.hidden = p.dataset.idioma !== alvo));
+          grupo.querySelectorAll('[data-ver]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+          if (anuncio) anuncio.textContent = alvo === 'en' ? 'Depoimento em inglês' : 'Depoimento em português';
+        }),
+      );
+    });
+
+    // Navegação entre depoimentos (só existe com 2+)
+    const controles = raiz.querySelector<HTMLElement>('[data-controles]');
+    if (!controles || itens.length < 2) return;
+    controles.hidden = false;
+    const pontos = [...raiz.querySelectorAll<HTMLButtonElement>('[data-ir]')];
+    let ativo = 0;
+    const ir = (i: number) => {
+      ativo = (i + itens.length) % itens.length;
+      itens.forEach((it, k) => {
+        it.hidden = k !== ativo;
+        it.classList.toggle('is-ativo', k === ativo);
+      });
+      pontos.forEach((p, k) => (k === ativo ? p.setAttribute('aria-current', 'true') : p.removeAttribute('aria-current')));
+      if (anuncio) anuncio.textContent = itens[ativo].getAttribute('aria-label') ?? '';
+    };
+    raiz.querySelector('[data-ant]')?.addEventListener('click', () => ir(ativo - 1));
+    raiz.querySelector('[data-prox]')?.addEventListener('click', () => ir(ativo + 1));
+    pontos.forEach((p, k) => p.addEventListener('click', () => ir(k)));
+  });
+</script>
+
+<style>
+  .depo {
+    padding-inline: var(--frame-inset);
+  }
+
+  .depo__frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--r-frame);
+    background: var(--brand-red-deep);
+    color: #fff;
+  }
+
+  .depo__cabeca {
+    padding: clamp(1.75rem, 1rem + 3vw, 3.5rem) clamp(1.25rem, 0.5rem + 4vw, 5rem) 0;
+  }
+
+  .depo__titulo {
+    font-family: var(--font-display);
+    font-size: var(--fs-md);
+    font-weight: 600;
+    color: rgb(255 255 255 / 0.82);
+  }
+
+  /* ---------- Item ---------- */
+  .depo__item {
+    display: grid;
+  }
+
+  .depo__item[hidden] {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .depo__item.is-ativo {
+      animation: depo-entra 0.6s var(--ease-out);
+    }
+  }
+
+  @keyframes depo-entra {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+  }
+
+  .depo__texto {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: var(--sp-5);
+    padding: var(--sp-6) clamp(1.25rem, 0.5rem + 4vw, 5rem) clamp(2rem, 1rem + 4vw, 4.5rem);
+  }
+
+  .depo__selo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: 0.375rem 0.875rem;
+    border: 1px solid rgb(255 255 255 / 0.45);
+    border-radius: var(--r-pill);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .depo__aspas {
+    display: grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: var(--brand-red);
+    color: #fff;
+    box-shadow: 0 10px 24px -10px rgb(0 0 0 / 0.45);
+  }
+
+  .depo__citacao {
+    margin: 0;
+  }
+
+  .depo__citacao p {
+    max-width: 40ch;
+    font-family: var(--font-display);
+    font-size: clamp(1.125rem, 0.95rem + 0.8vw, 1.625rem);
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    color: #fff;
+    text-wrap: pretty;
+  }
+
+  .depo__citacao p[hidden] {
+    display: none;
+  }
+
+  .depo__rodape {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-3) var(--sp-5);
+    width: 100%;
+    max-width: 40rem;
+    padding-top: var(--sp-5);
+    border-top: 1.5px dashed rgb(255 255 255 / 0.4);
+  }
+
+  .depo__autor {
+    display: grid;
+    gap: 0.125rem;
+  }
+
+  .depo__autor strong {
+    font-family: var(--font-display);
+    font-size: var(--fs-lg);
+    font-weight: 800;
+  }
+
+  .depo__autor span {
+    font-size: var(--fs-sm);
+    color: rgb(255 255 255 / 0.82);
+  }
+
+  .depo__nivel {
+    padding: 0.375rem 0.875rem;
+    border-radius: var(--r-pill);
+    background: #fff;
+    color: var(--brand-red-deep);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+  }
+
+  .depo__idiomas {
+    display: inline-flex;
+    margin-left: auto;
+    padding: 0.25rem;
+    border-radius: var(--r-pill);
+    background: rgb(0 0 0 / 0.2);
+  }
+
+  .depo__idiomas[hidden] {
+    display: none;
+  }
+
+  .depo__idioma {
+    min-height: 44px;
+    padding: 0 1rem;
+    border: 0;
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--dur-base) var(--ease-out);
+  }
+
+  .depo__idioma[aria-pressed='true'] {
+    background: #fff;
+    color: var(--brand-red-deep);
+  }
+
+  .depo__idioma:hover:not([aria-pressed='true']) {
+    background: rgb(255 255 255 / 0.12);
+  }
+
+  .depo__frame :focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+  }
+
+  .depo__midia,
+  .depo__video {
+    width: 100%;
+    max-width: 40rem;
+  }
+
+  .depo__midia figcaption {
+    margin-bottom: var(--sp-2);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+  }
+
+  .depo__midia audio {
+    width: 100%;
+  }
+
+  .depo__video {
+    border-radius: var(--r-lg);
+  }
+
+  /* ---------- Foto ---------- */
+  .depo__foto {
+    order: -1;
+    aspect-ratio: 1;
+    margin: var(--sp-5) var(--sp-5) 0;
+    border-radius: var(--r-xl) var(--r-xl) 999px 999px;
+    overflow: hidden;
+    background: var(--brand-red);
+  }
+
+  /* ---------- Vários depoimentos ---------- */
+  .depo__controles {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: 0 clamp(1.25rem, 0.5rem + 4vw, 5rem) var(--sp-7);
+  }
+
+  .depo__controles[hidden] {
+    display: none;
+  }
+
+  .depo__seta {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1.5px solid rgb(255 255 255 / 0.5);
+    border-radius: 50%;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .depo__seta:hover {
+    background: rgb(255 255 255 / 0.12);
+  }
+
+  .depo__pontos {
+    display: flex;
+  }
+
+  .depo__ponto {
+    position: relative;
+    width: 2.5rem;
+    height: 2.75rem;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .depo__ponto::before {
+    content: '';
+    position: absolute;
+    inset: 50% 0.375rem auto;
+    height: 4px;
+    border-radius: 4px;
+    translate: 0 -50%;
+    background: rgb(255 255 255 / 0.35);
+  }
+
+  .depo__ponto[aria-current='true']::before {
+    background: #fff;
+  }
+
+  /* ---------- Desktop: texto à esquerda, foto em "D" à direita ---------- */
+  @media (min-width: 64rem) {
+    .depo__item {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      min-height: 34rem;
+    }
+
+    .depo__texto {
+      align-content: center;
+      padding-top: calc(var(--fs-md) * 1.5 + clamp(2.5rem, 1.5rem + 3vw, 4.5rem));
+    }
+
+    .depo__foto {
+      order: 0;
+      aspect-ratio: auto;
+      margin: 0;
+      border-radius: 45% 0 0 45% / 50% 0 0 50%;
+    }
+
+    .depo__cabeca {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+  }
+</style>

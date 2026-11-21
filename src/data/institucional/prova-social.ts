@@ -1,5 +1,6 @@
 /**
- * Prova social — DEPOIMENTOS e RECONHECIMENTOS.
+ * Prova social — RECONHECIMENTOS (e o formato antigo de depoimentos, mantido vazio).
+ * Depoimentos de alunos agora ficam em ./depoimentos.ts (seção com foto, PT/EN, áudio e vídeo).
  * Ficam vazios até haver material REAL, com fonte verificável e autorização de uso.
  * Cada item só é exibido se `autorizado: true`. Listas vazias = seções ocultas.
  *
