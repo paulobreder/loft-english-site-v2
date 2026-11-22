@@ -2,7 +2,8 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { fileURLToPath } from 'node:url';
-import { flags, isVidaNaLoftReleased } from './src/config/site.ts';
+import { flags, isVidaNaLoftReleased, videoSobreALoft } from './src/config/site.ts';
+import { rm } from 'node:fs/promises';
 
 /**
  * Trava de fotografias da seção "Vida na Loft".
@@ -35,6 +36,25 @@ function vidaNaLoftGate() {
 }
 
 /**
+ * Trava do vídeo da turma (Sobre a Loft English): no site OFICIAL (SITE_URL definido e sem
+ * PUBLIC_NOINDEX) o MP4 só é publicado com videoSobreALoft.oficialAutorizado = true.
+ */
+function videoSobreGate() {
+  return {
+    name: 'loft-video-sobre',
+    hooks: {
+      'astro:build:done': async ({ dir, logger }) => {
+        const oficial = Boolean(process.env.SITE_URL) && process.env.PUBLIC_NOINDEX !== 'true';
+        if (oficial && !videoSobreALoft.oficialAutorizado) {
+          await rm(new URL('./media/video/', dir), { recursive: true, force: true });
+          logger.info('Vídeo da turma: removido da build oficial (autorização pendente).');
+        }
+      },
+    },
+  };
+}
+
+/**
  * SITE_URL: domínio definitivo (ex.: https://www.dominio-da-escola.com.br).
  * Sem SITE_URL, a build é tratada como PRÉVIA: noindex + robots bloqueando rastreadores.
  */
@@ -49,6 +69,7 @@ export default defineConfig({
   build: { format: 'directory' },
   integrations: [
     vidaNaLoftGate(),
+    videoSobreGate(),
     sitemap({
       // A política de privacidade só entra no sitemap depois de revisada (ver src/config/site.ts).
       filter: (page) => flags.privacyReviewed || !page.includes('/privacidade/'),

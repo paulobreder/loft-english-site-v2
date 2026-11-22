@@ -89,6 +89,17 @@ export const mediaRelease = {
 export const isVidaNaLoftReleased = Object.values(mediaRelease.vidaNaLoft).every((ok) => ok === true);
 
 /**
+ * Vídeo da turma em "Sobre a Loft English" (public/media/video/loft-experiencia-alunos.mp4).
+ * Liberado para a PRÉVIA de avaliação (21/11/2026). A publicação OFICIAL depende da autorização de
+ * uso de imagem dos alunos pela escola: enquanto `oficialAutorizado` for false, o site oficial mostra
+ * uma foto já liberada no lugar e o MP4 é removido de dist/ (ver astro.config.mjs).
+ */
+export const videoSobreALoft = {
+  previaAutorizada: true,
+  oficialAutorizado: false,
+};
+
+/**
  * FORMAS DE ESTUDAR (Presencial / Online) — seção com alternância na home.
  * Só aparece quando ao menos uma modalidade for confirmada (`confirmado: true`).
  * Descreva apenas o que a escola confirmar (para quais públicos, como funciona).
