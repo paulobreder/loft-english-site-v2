@@ -14,8 +14,8 @@
  */
 import type { ImageMetadata } from 'astro';
 import sofia from '../../assets/images/depoimentos/sofia-demonstrativo.webp';
-// Foto de turma que ocupa metade da seção (PROVISÓRIA até chegar a imagem de apoio definitiva).
-import fotoTurma from '../../assets/images/escola/aula-coletiva.png';
+// Foto de turma que ocupa metade da seção (imagem de apoio enviada pelo responsável em 21/11/2026).
+import fotoTurma from '../../assets/images/depoimentos/turma-conversa.webp';
 
 export type StatusDepoimento = 'real' | 'demonstrativo';
 export type Fase = 'Kids' | 'Teens' | 'Adults';
@@ -71,6 +71,6 @@ export const depoimentos: Depoimento[] = [
 /** Foto de turma usada quando o depoimento não define `fundo`. */
 export const fundoPadrao = {
   img: fotoTurma,
-  alt: 'Turma da Loft English em aula, com a professora à frente da sala',
-  pos: '50% 45%',
+  alt: 'Professora e alunos conversam sentados em roda na sala de aula',
+  pos: '55% 35%',
 };
