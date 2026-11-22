@@ -8,8 +8,8 @@
  * - status 'real': só aparece com `autorizado: true` (autorização de uso de nome, foto e fala;
  *   para menores, dos responsáveis).
  * - status 'demonstrativo': persona fictícia para apresentar a proposta à proprietária.
- *   Aparece SOMENTE nas prévias (dev e GitHub Pages com PUBLIC_NOINDEX=true), sempre com o
- *   rótulo "Depoimento demonstrativo". NUNCA é renderizada no site oficial (isProductionSite).
+ *   Aparece SOMENTE nas prévias (dev e GitHub Pages com PUBLIC_NOINDEX=true), sem selo visível
+ *   (removido a pedido do responsável em 21/11/2026). NUNCA é renderizada no site oficial (isProductionSite).
  * - Campos opcionais (textoEn, audio, video) só geram interface quando preenchidos.
  */
 import type { ImageMetadata } from 'astro';
