@@ -72,7 +72,7 @@ Atende ao feedback da proprietária (`06_CONTEUDOS_PLANEJADOS/FEEDBACK-PROPRIETA
 | Paleta | Vermelho e branco dominantes (fundos rosados, faixas, rodapé vermelho profundo `#8E0012`); azul-marinho só em títulos, Adults e detalhes |
 | Hero | Estrutura igual; imagem de Londres trocada pela bandeira dos EUA + Nova York (inglês americano) |
 | Mascote | Búfalo ilustrado (2 versões) com movimento suave, em Sobre nós, "em poucas palavras" e na chamada final; parado com redução de movimento |
-| Barra superior | Faixa vermelha com "inglês americano" e Instagram |
+| Barra superior | Removida em 21/11/2026 (pedido do responsável) |
 | Cursos | Cards com rodapé colorido (vermelho, vermelho profundo, azul) |
 | Sobre nós | Colagem: foto da turma + mapa ilustrado de São Gabriel da Palha (provisório, gerado; o marcador é ilustrativo, não indica endereço) + mascote; pilar "Inglês americano" |
 | Carrossel de valores | "O que faz a Loft ser a Loft" após a faixa listrada: Confiança, Curiosidade, Acolhimento, Alegria de aprender (valores a validar com a proprietária). Imagens 1–2 geradas; 3–4 fotos reais da Loft com autorização confirmada em 20/11/2026 |

@@ -69,7 +69,7 @@ const jeitos: { icon: IconName; titulo: string; texto: string }[] = [
         </p>
         <p class="fabiola__slogan" lang="en" data-reveal style="--reveal-delay:300ms">{site.slogan}</p>
 
-        <figure class="fabiola__com-equipe" data-reveal style="--reveal-delay:350ms">
+        <div class="fabiola__com-equipe" data-reveal style="--reveal-delay:350ms">
           <div class="fabiola__com-equipe-foto media-fill">
             <Picture
               src={fotoEquipeVermelho}
@@ -82,8 +82,7 @@ const jeitos: { icon: IconName; titulo: string; texto: string }[] = [
               loading="lazy"
             />
           </div>
-          <figcaption>Com a equipe, na parede da Loft.</figcaption>
-        </figure>
+        </div>
       </div>
     </div>
   </section>
@@ -281,12 +280,6 @@ const jeitos: { icon: IconName; titulo: string; texto: string }[] = [
 
   .fabiola__com-equipe-foto :global(img) {
     object-position: 50% 35%;
-  }
-
-  .fabiola__com-equipe figcaption {
-    margin-top: var(--sp-3);
-    font-size: var(--fs-sm);
-    color: var(--color-muted);
   }
 
   @media (min-width: 64rem) {
