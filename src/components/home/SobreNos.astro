@@ -27,7 +27,7 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
 
 <section class="section section--alt sobre" id="sobre-nos" aria-labelledby="sobre-title">
   <span id="escola" class="sobre__alias" aria-hidden="true"></span>
-  <div class="container sobre__grid">
+  <div class="container"><div class="sobre__grid">
     <!-- 1–2. Identificação e frase -->
     <div class="sobre__cabeca">
       <p class="eyebrow" data-reveal>Sobre a Loft English</p>
@@ -36,6 +36,8 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
       </h2>
     </div>
 
+    <!-- Palco: mesmas posições e proporções da referência (medidas em % da largura do bloco) -->
+    <div class="sobre__palco">
     <!-- 3a. Foto da aula -->
     <div class="sobre__foto media-fill" data-reveal="foto">
       <Picture
@@ -45,7 +47,7 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
         fallbackFormat="jpg"
         quality={76}
         widths={[480, 720, 960]}
-        sizes="(min-width: 64rem) 34vw, (min-width: 48rem) 52vw, 92vw"
+        sizes="(min-width: 48rem) 25rem, 92vw"
         loading="lazy"
       />
     </div>
@@ -59,7 +61,7 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
         fallbackFormat="jpg"
         quality={80}
         widths={[360, 540, 720]}
-        sizes="(min-width: 64rem) 20vw, (min-width: 48rem) 36vw, 46vw"
+        sizes="(min-width: 48rem) 16rem, 46vw"
         loading="lazy"
       />
     </div>
@@ -69,8 +71,7 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
       <Mascote variante="corpo" largura={260} reveal="left" revealDelay={450} />
     </div>
 
-    <!-- 5 + 3c. Avião (decorativo) sobre o vídeo da turma -->
-    <div class="sobre__lado">
+    <!-- 5. Avião (no lugar das árvores da referência) -->
       <div class="sobre__aviao" data-reveal aria-hidden="true">
         <Image src={aviao} alt="" widths={[360, 720]} sizes="(min-width: 64rem) 22rem, 60vw" loading="lazy" />
       </div>
@@ -86,7 +87,7 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
               width={480}
               height={854}
               widths={[320, 480]}
-              sizes="(min-width: 48rem) 17rem, 62vw"
+              sizes="(min-width: 48rem) 22rem, 78vw"
               loading="lazy"
               class="video-card__capa"
             />
@@ -142,7 +143,7 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
         </a>
       </div>
     </div>
-  </div>
+  </div></div>
 
 </section>
 
@@ -179,81 +180,68 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
     top: 0;
   }
 
-  /* ---------- Grade (celular: empilhado na ordem de leitura) ---------- */
+  /* ---------- Celular: empilhado na ordem de leitura ---------- */
   .sobre__grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-areas:
-      'cabeca cabeca'
-      'foto   foto'
-      'mapa   bisao'
-      'textos textos'
-      'lado   lado';
-    gap: var(--sp-6) var(--sp-4);
+    gap: var(--sp-7);
   }
 
   .sobre__cabeca {
-    grid-area: cabeca;
     display: grid;
     gap: var(--sp-3);
   }
 
   .sobre__frase {
     max-width: 22ch;
-    font-size: clamp(1.75rem, 1.15rem + 2.3vw, 3rem);
+    font-size: clamp(1.75rem, 1.2rem + 2vw, 2.25rem);
     font-weight: 800;
-    letter-spacing: -0.035em;
-    line-height: 1.08;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
     color: var(--brand-navy);
     text-wrap: balance;
   }
 
+  .sobre__palco {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--sp-4);
+  }
+
   .sobre__foto {
-    grid-area: foto;
-    aspect-ratio: 4 / 5;
-    border-radius: var(--r-xl);
+    grid-column: 1 / -1;
+    aspect-ratio: 291 / 196;
+    border-radius: var(--r-lg);
     overflow: hidden;
     background: var(--color-surface-deep);
   }
 
   .sobre__foto :global(img) {
-    object-position: 50% 0%;
+    object-position: 50% 26%;
   }
 
   .sobre__mapa {
-    grid-area: mapa;
-    align-self: start;
-    aspect-ratio: 1;
-    border-radius: var(--r-lg);
+    aspect-ratio: 188 / 194;
+    border-radius: var(--r-md);
     overflow: hidden;
-    border: 5px solid #fff;
+    border: 4px solid #fff;
     box-shadow: var(--shadow-2);
     background: #f6e3c4;
   }
 
   .sobre__bisao {
-    grid-area: bisao;
-    align-self: center;
     justify-self: center;
-    width: min(100%, 15rem);
+    width: min(100%, 13rem);
   }
 
   .sobre__bisao :global(.mascote) {
     width: 100%;
   }
 
-  /* Avião + vídeo empilhados (o avião faz o papel das árvores da referência) */
-  .sobre__lado {
-    grid-area: lado;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--sp-2);
-  }
-
   .sobre__aviao {
-    align-self: flex-end;
-    width: min(70%, 22rem);
+    grid-column: 1 / -1;
+    justify-self: end;
+    width: min(70%, 18rem);
     opacity: 0.9;
   }
 
@@ -277,27 +265,30 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
     }
   }
 
-  /* ---------- Vídeo vertical (proporção de tela de celular, ~9:19,5) ---------- */
+  /* ---------- Vídeo (3:4, como a terceira foto da referência) ---------- */
   /* Limpo, como as fotos da referência: só cantos arredondados, sem moldura de aparelho */
   .video-card {
     position: relative;
-    width: min(66%, 17rem);
-    aspect-ratio: 9 / 19.5;
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: min(78%, 22rem);
+    aspect-ratio: 3 / 4;
     border-radius: var(--r-lg);
     overflow: hidden;
     background: var(--color-surface-deep);
     isolation: isolate;
   }
 
-  /* Capa e vídeo preenchem a tela; deslocados para a direita para não sobrar a parede da esquerda */
+  /* Capa e vídeo 20% mais largos e alinhados à direita: corta a parede/porta da esquerda */
   .video-card :global(.video-card__capa),
   .video-card__video {
     position: absolute;
-    inset: 0;
-    width: 100%;
+    top: 0;
+    right: 0;
+    width: 120%;
     height: 100%;
     object-fit: cover;
-    object-position: 76% 50%;
+    object-position: 50% 55%;
   }
 
   .video-card__video {
@@ -399,7 +390,6 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
 
   /* ---------- Textos ---------- */
   .sobre__textos {
-    grid-area: textos;
     display: grid;
     gap: var(--sp-6);
   }
@@ -449,65 +439,99 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
     color: #fff;
   }
 
-  /* ---------- Tablet ---------- */
+  /* ---------- A partir do tablet: mesmo arranjo e proporções da referência ----------
+     Medidas tiradas do print da Overlake (bloco de 660 px): tudo em % da largura do bloco,
+     então a composição escala junto, sem colisões. Altura do palco = 417/660 da largura. */
   @media (min-width: 48rem) {
     .sobre__grid {
-      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-      grid-template-areas:
-        'cabeca cabeca'
-        'foto   mapa'
-        'foto   bisao'
-        'textos lado';
-      column-gap: var(--sp-6);
-    }
-
-    .sobre__textos {
-      align-self: end;
-    }
-
-    .video-card {
-      width: min(100%, 17rem);
-    }
-
-    .sobre__aviao {
-      width: 85%;
-    }
-  }
-
-  /* ---------- Desktop: composição assimétrica da referência ---------- */
-  @media (min-width: 64rem) {
-    .sobre__grid {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      grid-template-areas:
-        'cabeca cabeca cabeca cabeca cabeca cabeca cabeca cabeca lado lado lado lado'
-        'foto   foto   foto   foto   foto   mapa   mapa   mapa   lado lado lado lado'
-        'foto   foto   foto   foto   foto   bisao  bisao  bisao  lado lado lado lado'
-        'textos textos textos textos textos textos textos textos lado lado lado lado';
-      column-gap: var(--sp-5);
-      row-gap: var(--sp-6);
+      --bloco: min(100%, max(44rem, 54vw), 58rem);
+      width: var(--bloco);
+      margin-left: max(0px, calc((100% - var(--bloco)) * 0.445));
+      gap: 0;
     }
 
     .sobre__cabeca {
-      padding-bottom: var(--sp-4);
+      max-width: 60%;
+      margin-bottom: calc(var(--bloco) * 0.047);
     }
 
-    .sobre__lado {
-      justify-content: flex-end;
-      align-items: center;
+    .sobre__frase {
+      max-width: none;
+      font-size: clamp(1.625rem, 0.6rem + 1.9vw, 2.25rem);
+      font-weight: 700;
+      line-height: 1.15;
     }
 
+    .sobre__palco {
+      display: block;
+      position: relative;
+      aspect-ratio: 660 / 417;
+    }
+
+    .sobre__palco > * {
+      position: absolute;
+      margin: 0;
+    }
+
+    /* Foto 1: canto superior esquerdo (291 × 196) */
+    .sobre__foto {
+      left: 0;
+      top: 0;
+      width: 44.1%;
+    }
+
+    /* Mapa: ao lado da foto (188 × 194), por cima do vídeo */
+    .sobre__mapa {
+      left: 45.5%;
+      top: 0;
+      width: 28.5%;
+      z-index: 2;
+    }
+
+    /* Vídeo: terceira imagem, 3:4, mais baixa e parcialmente sob o mapa */
+    .video-card {
+      left: 60.3%;
+      top: 16.5%;
+      width: 39.7%;
+      z-index: 1;
+    }
+
+    /* Avião: no lugar das árvores, acima do vídeo */
     .sobre__aviao {
-      width: 100%;
+      left: 74%;
+      top: -7%;
+      width: 26%;
+      z-index: 0;
+    }
+
+    /* Bisão: no lugar da coruja, no canto inferior esquerdo da foto 1 */
+    .sobre__bisao {
+      left: -2.5%;
+      top: 33%;
+      width: 21%;
+      z-index: 3;
     }
 
     .sobre__textos {
+      width: 58%;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      column-gap: var(--sp-7);
-      padding-top: var(--sp-4);
+      column-gap: 6%;
+      row-gap: var(--sp-6);
+      margin-top: var(--sp-2);
+    }
+
+    .sobre__bloco p {
+      font-size: var(--fs-sm);
+      line-height: 1.65;
     }
 
     .sobre__acoes {
       grid-column: 1 / -1;
+      gap: var(--sp-3) var(--sp-5);
+    }
+
+    .sobre__acoes a {
+      white-space: nowrap;
     }
   }
 
