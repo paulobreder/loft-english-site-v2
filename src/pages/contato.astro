@@ -4,7 +4,8 @@ import PageHero from '../components/PageHero.astro';
 import { Picture } from 'astro:assets';
 import Icon from '../components/Icon.astro';
 import BuffaloMark from '../components/BuffaloMark.astro';
-import cityMap from '../assets/images/mapa-sao-gabriel-da-palha-azul.png';
+// Mapa em tons de vermelho da paleta (enviado pelo responsável em 23/11/2026; base OpenStreetMap). Já traz o círculo e o nome da cidade.
+import cityMap from '../assets/images/mapa-sao-gabriel-da-palha-vermelho.webp';
 import type { IconName } from '../components/icons';
 import { site, contact } from '../config/site';
 
@@ -145,11 +146,10 @@ const mapLink = contact.mapsUrl
             formats={['avif', 'webp']}
             fallbackFormat="jpg"
             quality={80}
-            widths={[480, 720, 900]}
+            widths={[480, 720, 960, 1280]}
             sizes="(min-width: 64rem) 34vw, 92vw"
             loading="lazy"
           />
-          <span class="place__ring" aria-hidden="true"></span>
           <span class="place__tag">
             <Icon name="map-pin" size={16} />
             {site.city} · {site.state}
@@ -385,21 +385,8 @@ const mapLink = contact.mapsUrl
     aspect-ratio: 16 / 10;
     border-radius: calc(var(--r-xl) - var(--sp-3));
     overflow: hidden;
-    background: #eef0ec;
+    background: var(--brand-blush);
     box-shadow: inset 0 0 0 1px var(--color-line);
-  }
-
-  .place__ring {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 38%;
-    aspect-ratio: 1;
-    translate: -50% -50%;
-    border-radius: 50%;
-    border: 2px solid rgb(196 0 24 / 0.55);
-    background: rgb(196 0 24 / 0.08);
-    pointer-events: none;
   }
 
   .place__tag {
