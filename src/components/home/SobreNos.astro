@@ -6,7 +6,8 @@
  *   · dois blocos de texto (propósito e compromisso) · chamadas.
  * Grade com áreas nomeadas (sem posicionamento absoluto entre elementos): nada cobre rostos.
  * Textos: proposta institucional a confirmar com a proprietária antes da versão oficial.
- * Vídeo: liberado na prévia; no site oficial só com videoSobreALoft.oficialAutorizado (src/config/site.ts).
+ * Vídeo: toca na própria tela em formato de celular, sem som e em loop ("como um GIF"), a pedido do responsável.
+ * Liberado na prévia; no site oficial só com videoSobreALoft.oficialAutorizado (src/config/site.ts).
  */
 import { Picture, Image } from 'astro:assets';
 import Mascote from '../Mascote.astro';
@@ -16,7 +17,8 @@ import { site, isProductionSite, videoSobreALoft } from '../../config/site';
 import fotoAula from '../../assets/images/sobre/aula-quadro-ingles-americano.webp';
 import mapaCidade from '../../assets/images/mapa-ilustrado-sao-gabriel-da-palha.webp';
 import aviao from '../../assets/images/sobre/aviao-trajetoria.png';
-import capaVideo from '../../assets/images/sobre/loft-experiencia-alunos-poster.webp';
+// Capa vertical 480×854 extraída do próprio vídeo (quadro de 2,77 s, o mesmo da capa original).
+import capaVideo from '../../assets/images/sobre/loft-experiencia-alunos-capa-vertical.webp';
 import fotoReserva from '../../assets/images/escola/aula-coletiva.png';
 
 const mostrarVideo = isProductionSite ? videoSobreALoft.oficialAutorizado : videoSobreALoft.previaAutorizada;
@@ -75,24 +77,27 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
 
       {
         mostrarVideo ? (
-          <div class="video-card" data-reveal="foto" style="--reveal-delay:200ms">
-            <button type="button" class="video-card__botao" data-video-abrir aria-label="Reproduzir vídeo da turma da Loft English" aria-haspopup="dialog">
-              <Picture
-                src={capaVideo}
-                alt=""
-                formats={['avif', 'webp']}
-                quality={80}
-                width={480}
-                height={640}
-                widths={[360, 480]}
-                sizes="(min-width: 64rem) 24rem, (min-width: 48rem) 40vw, 72vw"
-                loading="lazy"
-              />
+          <div class="video-card" data-reveal="foto" style="--reveal-delay:200ms" data-celular>
+            <Picture
+              src={capaVideo}
+              alt=""
+              formats={['avif', 'webp']}
+              quality={82}
+              width={480}
+              height={854}
+              widths={[320, 480]}
+              sizes="(min-width: 48rem) 17rem, 62vw"
+              loading="lazy"
+              class="video-card__capa"
+            />
+            <video class="video-card__video" muted loop playsinline preload="none" disablepictureinpicture width="480" height="854" data-src={videoSrc} aria-hidden="true" />
+            <button type="button" class="video-card__botao" data-celular-botao aria-pressed="false" aria-label="Reproduzir vídeo da turma da Loft English (sem som)">
               <span class="video-card__play" aria-hidden="true">
-                <span class="video-card__icone">
-                  <Icon name="play" size={22} />
+                <Icon name="play" size={30} class="video-card__ico-play" />
+                <span class="video-card__ico-pausa">
+                  <span></span>
+                  <span></span>
                 </span>
-                Assistir
               </span>
             </button>
           </div>
@@ -139,54 +144,28 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
     </div>
   </div>
 
-  {
-    mostrarVideo && (
-      <dialog class="video-modal" data-video-modal aria-labelledby="video-modal-title">
-        <div class="video-modal__caixa">
-          <div class="video-modal__topo">
-            <h3 id="video-modal-title" class="video-modal__titulo">Turma da Loft English em atividade</h3>
-            <button type="button" class="video-modal__fechar" data-video-fechar>
-              <Icon name="x" size={20} />
-              <span>Fechar</span>
-            </button>
-          </div>
-          <video class="video-modal__video" controls playsinline preload="none" width="480" height="854" data-src={videoSrc}>
-            Seu navegador não reproduz vídeos.
-          </video>
-        </div>
-      </dialog>
-    )
-  }
 </section>
 
 <script>
-  const modal = document.querySelector<HTMLDialogElement>('[data-video-modal]');
-  const abrir = document.querySelector<HTMLButtonElement>('[data-video-abrir]');
-  if (modal && abrir) {
-    const video = modal.querySelector<HTMLVideoElement>('video')!;
-    const fechar = modal.querySelector<HTMLButtonElement>('[data-video-fechar]')!;
-
-    abrir.addEventListener('click', () => {
-      // O MP4 só é requisitado aqui, depois do clique.
+  /* Vídeo "como GIF": toca na própria tela em formato de celular, sem som e em loop.
+     O MP4 só é requisitado no primeiro clique. Clicar de novo pausa. */
+  document.querySelectorAll<HTMLElement>('[data-celular]').forEach((card) => {
+    const video = card.querySelector<HTMLVideoElement>('video')!;
+    const botao = card.querySelector<HTMLButtonElement>('[data-celular-botao]')!;
+    video.muted = true;
+    const atualizar = (tocando: boolean) => {
+      card.classList.toggle('is-tocando', tocando);
+      botao.setAttribute('aria-pressed', String(tocando));
+      botao.setAttribute('aria-label', tocando ? 'Pausar vídeo da turma da Loft English' : 'Reproduzir vídeo da turma da Loft English (sem som)');
+    };
+    video.addEventListener('playing', () => atualizar(true));
+    video.addEventListener('pause', () => atualizar(false));
+    botao.addEventListener('click', () => {
       if (!video.getAttribute('src') && video.dataset.src) video.src = video.dataset.src;
-      modal.showModal();
-      video.focus();
-      video.play().catch(() => {
-        /* alguns navegadores pedem um segundo toque: os controles ficam visíveis */
-      });
+      if (video.paused) video.play().catch(() => atualizar(false));
+      else video.pause();
     });
-
-    fechar.addEventListener('click', () => modal.close());
-    // Clique no fundo escurecido fecha
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.close();
-    });
-    // Escape dispara "cancel" → "close" nativamente
-    modal.addEventListener('close', () => {
-      video.pause();
-      abrir.focus();
-    });
-  }
+  });
 </script>
 
 <style>
@@ -298,66 +277,105 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
     }
   }
 
-  /* ---------- Card do vídeo (capa 3:4) ---------- */
+  /* ---------- Tela em formato de celular (proporção de iPhone, ~9:19,5) ---------- */
   .video-card {
     position: relative;
-    width: min(78%, 24rem);
-    aspect-ratio: 3 / 4;
-    border-radius: 999px 999px var(--r-xl) var(--r-xl);
+    width: min(62%, 17rem);
+    aspect-ratio: 9 / 19.5;
+    border: 6px solid var(--brand-navy);
+    border-radius: 2.75rem;
     overflow: hidden;
-    background: var(--brand-red-deep);
+    background: var(--brand-navy);
     box-shadow: var(--shadow-2);
+    isolation: isolate;
   }
 
-  .video-card__botao {
-    display: block;
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    border: 0;
-    background: none;
-    cursor: pointer;
-  }
-
-  .video-card__botao :global(picture),
-  .video-card__botao :global(img) {
-    display: block;
+  /* Capa e vídeo preenchem a tela; deslocados para a direita para não sobrar a parede da esquerda */
+  .video-card :global(.video-card__capa),
+  .video-card__video {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: 76% 50%;
   }
 
-  /* Botão de play no canto inferior esquerdo: não cobre os rostos da capa */
-  .video-card__play {
+  .video-card__video {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .video-card.is-tocando .video-card__video {
+    opacity: 1;
+  }
+
+  /* Botão cobre a tela inteira; ícone no centro */
+  .video-card__botao {
     position: absolute;
-    left: 1rem;
-    bottom: 1rem;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-2);
-    padding: 0.375rem 1rem 0.375rem 0.375rem;
-    border-radius: var(--r-pill);
-    background: #fff;
-    color: var(--brand-red-deep);
-    font-family: var(--font-display);
-    font-size: var(--fs-sm);
-    font-weight: 800;
-    box-shadow: 0 10px 24px -10px rgb(0 0 0 / 0.5);
-    transition: transform var(--dur-base) var(--ease-out);
-  }
-
-  .video-card__icone {
+    inset: 0;
+    z-index: 1;
     display: grid;
     place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .video-card__play {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
     border-radius: 50%;
     background: var(--brand-red);
     color: #fff;
+    box-shadow:
+      0 0 0 6px rgb(255 255 255 / 0.85),
+      0 12px 28px -8px rgb(0 0 0 / 0.55);
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      opacity 0.25s ease;
+  }
+
+  .video-card__play :global(.video-card__ico-play) {
+    margin-left: 4px;
+  }
+
+  .video-card__ico-pausa {
+    display: none;
+    gap: 6px;
+  }
+
+  .video-card__ico-pausa span {
+    width: 6px;
+    height: 22px;
+    border-radius: 2px;
+    background: currentColor;
   }
 
   .video-card__botao:hover .video-card__play {
-    transform: scale(1.05);
+    transform: scale(1.06);
+  }
+
+  /* Tocando: o ícone some; reaparece (como pausa) ao passar o mouse ou focar pelo teclado */
+  .video-card.is-tocando .video-card__play {
+    opacity: 0;
+  }
+
+  .video-card.is-tocando .video-card__botao:hover .video-card__play,
+  .video-card.is-tocando .video-card__botao:focus-visible .video-card__play {
+    opacity: 1;
+  }
+
+  .video-card.is-tocando :global(.video-card__ico-play) {
+    display: none;
+  }
+
+  .video-card.is-tocando .video-card__ico-pausa {
+    display: flex;
   }
 
   .video-card__botao:focus-visible {
@@ -367,6 +385,13 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
   .video-card:has(.video-card__botao:focus-visible) {
     outline: 3px solid var(--brand-red);
     outline-offset: 4px;
+  }
+
+  .video-card--foto {
+    aspect-ratio: 3 / 4;
+    width: min(78%, 24rem);
+    border: 0;
+    border-radius: 999px 999px var(--r-xl) var(--r-xl);
   }
 
   .video-card--foto :global(img) {
@@ -442,7 +467,7 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
     }
 
     .video-card {
-      width: 100%;
+      width: min(100%, 17rem);
     }
 
     .sobre__aviao {
@@ -469,7 +494,7 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
 
     .sobre__lado {
       justify-content: flex-end;
-      align-items: stretch;
+      align-items: center;
     }
 
     .sobre__aviao {
@@ -487,76 +512,4 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
     }
   }
 
-  /* ---------- Modal do vídeo ---------- */
-  .video-modal {
-    width: fit-content;
-    max-width: calc(100vw - 2rem);
-    max-height: calc(100dvh - 2rem);
-    padding: 0;
-    border: 0;
-    border-radius: var(--r-xl);
-    background: var(--brand-navy);
-    color: #fff;
-    overflow: hidden;
-  }
-
-  .video-modal::backdrop {
-    background: rgb(7 29 61 / 0.82);
-  }
-
-  .video-modal__caixa {
-    display: grid;
-    gap: var(--sp-3);
-    padding: var(--sp-4);
-  }
-
-  .video-modal__topo {
-    display: flex;
-    max-width: min(calc(100vw - 4rem), calc(min(80dvh, 854px) * 480 / 854));
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sp-4);
-  }
-
-  .video-modal__titulo {
-    font-family: var(--font-display);
-    font-size: var(--fs-sm);
-    font-weight: 700;
-    color: #fff;
-  }
-
-  .video-modal__fechar {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-2);
-    min-height: 44px;
-    padding: 0 1rem;
-    border: 1.5px solid rgb(255 255 255 / 0.5);
-    border-radius: var(--r-pill);
-    background: transparent;
-    color: #fff;
-    font: inherit;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  .video-modal__fechar:hover {
-    background: rgb(255 255 255 / 0.12);
-  }
-
-  .video-modal :focus-visible {
-    outline: 3px solid #fff;
-    outline-offset: 3px;
-  }
-
-  /* Proporção real 480 × 854, sem corte: contain e limite pela altura da tela */
-  .video-modal__video {
-    display: block;
-    width: min(calc(100vw - 4rem), calc(min(80dvh, 854px) * 480 / 854));
-    height: auto;
-    aspect-ratio: 480 / 854;
-    object-fit: contain;
-    border-radius: var(--r-lg);
-    background: #000;
-  }
 </style>
