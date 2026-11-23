@@ -20,7 +20,7 @@ const cta = primaryContact();
     <div class="hero__grid">
       <div class="hero__copy">
         <p class="eyebrow">Escola de inglês em {site.city}</p>
-        <h1 id="hero-title">Inglês para a vida, <span class="hero__accent">em cada fase.</span></h1>
+        <h1 id="hero-title"><span class="hero__linha">Um novo idioma.</span> <span class="hero__linha">Um <span class="hero__accent">mundo de possibilidades.</span></span></h1>
         <p class="lead">
           Conheça a Loft English e os caminhos de aprendizado para crianças, adolescentes e adultos em {site.city}, {site.stateName}.
         </p>
@@ -141,13 +141,17 @@ const cta = primaryContact();
     font-weight: 800;
     line-height: 1.04;
     letter-spacing: -0.035em;
-    max-width: 13ch;
+    max-width: 15ch;
+    text-wrap: balance;
+  }
+
+  .hero__linha {
+    display: block;
   }
 
   .hero__accent {
     position: relative;
     color: var(--brand-red);
-    white-space: nowrap;
   }
 
   .hero__actions {

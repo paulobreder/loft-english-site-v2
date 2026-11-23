@@ -1,5 +1,4 @@
 ---
-import { url } from '../lib/url';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/home/Hero.astro';
 import VidaNaLoft from '../components/home/VidaNaLoft.astro';
@@ -13,30 +12,9 @@ import CtaFinal from '../components/home/CtaFinal.astro';
 import FatosLoft from '../components/home/FatosLoft.astro';
 import ValoresCarrossel from '../components/home/ValoresCarrossel.astro';
 import Depoimentos from '../components/home/Depoimentos.astro';
-import Icon from '../components/Icon.astro';
 import { courses } from '../data/courses';
 import { faq } from '../data/faq';
-import { primaryContact, site } from '../config/site';
-
-const cta = primaryContact();
-
-const steps = [
-  {
-    title: 'Conheça os cursos',
-    text: 'Veja os públicos Kids, Teens e Adults e descubra qual combina com você ou com sua família.',
-    link: { href: url('/cursos/'), label: 'Ver cursos', external: false },
-  },
-  {
-    title: 'Fale com a equipe',
-    text: `Envie sua mensagem pelo ${cta.channel === 'whatsapp' ? 'WhatsApp' : 'Instagram oficial'} e conte o que você procura.`,
-    link: { href: cta.href, label: cta.label, external: true },
-  },
-  {
-    title: 'Tire suas dúvidas',
-    text: 'Pergunte sobre turmas, horários, modalidades e condições diretamente com a escola.',
-    link: { href: url('/contato/'), label: 'Ver contato', external: false },
-  },
-];
+import { site } from '../config/site';
 ---
 
 <BaseLayout
@@ -94,39 +72,6 @@ const steps = [
   <FormasDeEstudar />
 
   <ProvaSocial />
-
-  <!-- Como começar -->
-  <section class="section section--alt steps" aria-labelledby="steps-title">
-    <div class="container">
-      <div class="section-head" data-reveal>
-        <p class="eyebrow">Primeiros passos</p>
-        <h2 id="steps-title">Como começar na Loft English.</h2>
-      </div>
-      <ol class="steps__list">
-        {
-          steps.map((step, i) => (
-            <li class="step" data-reveal style={`--reveal-delay:${i * 130}ms`}>
-              <span class="step__num" aria-hidden="true">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <h3 class="step__title">{step.title}</h3>
-              <p class="step__text">{step.text}</p>
-              <a
-                class="arrow-link step__link"
-                href={step.link.href}
-                target={step.link.external ? '_blank' : undefined}
-                rel={step.link.external ? 'noopener noreferrer' : undefined}
-              >
-                {step.link.label}
-                <Icon name={step.link.external ? 'arrow-up-right' : 'arrow-right'} size={18} />
-                {step.link.external && <span class="visually-hidden"> (abre em nova aba)</span>}
-              </a>
-            </li>
-          ))
-        }
-      </ol>
-    </div>
-  </section>
 
   <!-- Dúvidas -->
   <section class="section faq-section" aria-labelledby="faq-title">
@@ -295,62 +240,6 @@ const steps = [
     .statement::before {
       width: 30%;
       height: 18%;
-    }
-  }
-
-  /* ---------- Como começar ---------- */
-  .steps__list {
-    list-style: none;
-    display: grid;
-    gap: var(--sp-4);
-    counter-reset: step;
-  }
-
-  .step {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-3);
-    padding: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem);
-    background: var(--color-surface);
-    border-radius: var(--r-xl);
-  }
-
-  .step__num {
-    font-family: var(--font-display);
-    display: inline-grid;
-    place-items: center;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
-    background: var(--color-surface-alt);
-    font-size: var(--fs-sm);
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: var(--brand-red);
-    margin-bottom: var(--sp-3);
-  }
-
-  .step__title {
-    font-size: var(--fs-lg);
-    font-weight: 700;
-  }
-
-  .step__text {
-    color: var(--color-muted);
-  }
-
-  .step__link {
-    margin-top: auto;
-    padding-top: var(--sp-3);
-  }
-
-  .step__link :global(svg) {
-    color: var(--brand-red);
-  }
-
-  @media (min-width: 48rem) {
-    .steps__list {
-      grid-template-columns: repeat(3, 1fr);
     }
   }
 
