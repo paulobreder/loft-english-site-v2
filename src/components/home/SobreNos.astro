@@ -277,16 +277,15 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
     }
   }
 
-  /* ---------- Tela em formato de celular (proporção de iPhone, ~9:19,5) ---------- */
+  /* ---------- Vídeo vertical (proporção de tela de celular, ~9:19,5) ---------- */
+  /* Limpo, como as fotos da referência: só cantos arredondados, sem moldura de aparelho */
   .video-card {
     position: relative;
-    width: min(62%, 17rem);
+    width: min(66%, 17rem);
     aspect-ratio: 9 / 19.5;
-    border: 6px solid var(--brand-navy);
-    border-radius: 2.75rem;
+    border-radius: var(--r-lg);
     overflow: hidden;
-    background: var(--brand-navy);
-    box-shadow: var(--shadow-2);
+    background: var(--color-surface-deep);
     isolation: isolate;
   }
 
