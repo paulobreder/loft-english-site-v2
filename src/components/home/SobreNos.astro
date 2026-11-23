@@ -9,14 +9,13 @@
  * Vídeo: toca na própria tela em formato de celular, sem som e em loop ("como um GIF"), a pedido do responsável.
  * Liberado na prévia; no site oficial só com videoSobreALoft.oficialAutorizado (src/config/site.ts).
  */
-import { Picture, Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import Mascote from '../Mascote.astro';
 import Icon from '../Icon.astro';
 import { url } from '../../lib/url';
 import { site, isProductionSite, videoSobreALoft } from '../../config/site';
 import fotoAula from '../../assets/images/sobre/aula-quadro-ingles-americano.webp';
 import mapaCidade from '../../assets/images/mapa-ilustrado-sao-gabriel-da-palha.webp';
-import aviao from '../../assets/images/sobre/aviao-trajetoria.png';
 // Capa vertical 480×854 extraída do próprio vídeo (quadro de 2,77 s, o mesmo da capa original).
 import capaVideo from '../../assets/images/sobre/loft-experiencia-alunos-capa-vertical.webp';
 import fotoReserva from '../../assets/images/escola/aula-coletiva.png';
@@ -73,9 +72,24 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
 
     <!-- 5. Avião (no lugar das árvores da referência) -->
       <div class="sobre__aviao" data-reveal aria-hidden="true">
-        <Image src={aviao} alt="" widths={[360, 720]} sizes="(min-width: 64rem) 22rem, 60vw" loading="lazy" />
+        <!-- "Daqui para o mundo": a rota sai do marcador da Loft no mapa e segue até o avião.
+             Coordenadas em décimos de % da largura do bloco (ver CSS do palco). -->
+        <svg class="voo" viewBox="0 0 500 270" fill="none" focusable="false">
+          <defs>
+            <mask id="voo-revela" maskUnits="userSpaceOnUse" x="0" y="0" width="500" height="270">
+              <path class="voo__revela" d="M19 252 C 40 110, 260 8, 452 100" stroke="#fff" stroke-width="16" stroke-linecap="round" pathLength="1" />
+            </mask>
+          </defs>
+          <path class="voo__rota" d="M19 252 C 40 110, 260 8, 452 100" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="9 9" mask="url(#voo-revela)" />
+          <circle class="voo__pulso" cx="19" cy="252" r="9" stroke="currentColor" stroke-width="3" />
+          <circle cx="19" cy="252" r="5" fill="currentColor" />
+          <g transform="translate(456 102) rotate(119) translate(-33 -33) scale(2.75)">
+            <g class="voo__aviao">
+              <path fill="currentColor" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
+            </g>
+          </g>
+        </svg>
       </div>
-
       {
         mostrarVideo ? (
           <div class="video-card" data-reveal="foto" style="--reveal-delay:200ms" data-celular>
@@ -221,6 +235,9 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
   }
 
   .sobre__mapa {
+    grid-row: 2;
+    grid-column: 1;
+    margin-top: 31%;
     aspect-ratio: 1 / 1;
     border-radius: var(--r-md);
     overflow: hidden;
@@ -230,6 +247,9 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
   }
 
   .sobre__bisao {
+    grid-row: 2;
+    grid-column: 2;
+    align-self: end;
     justify-self: center;
     width: min(100%, 13rem);
   }
@@ -238,30 +258,97 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
     width: 100%;
   }
 
+  /* Celular: a rota fica na mesma linha do mapa e começa no marcador da Loft
+     (marcador em 61% × 43% do mapa; mapa = coluna esquerda, ~48% da largura). */
   .sobre__aviao {
+    position: relative;
+    z-index: 3;
+    grid-row: 2;
     grid-column: 1 / -1;
-    justify-self: end;
-    width: min(70%, 18rem);
-    opacity: 0.9;
+    align-self: start;
+    width: 70%;
+    margin-left: 26.5%;
+    color: var(--brand-red);
+    pointer-events: none;
   }
 
-  .sobre__aviao :global(img) {
+  .voo {
     display: block;
     width: 100%;
     height: auto;
+    overflow: visible;
   }
 
-  /* Trajetória "desenha" da esquerda (marcador) para a direita (avião), uma única vez */
-  .reveal-on .sobre__aviao.is-visible {
-    animation: trajeto 1.8s var(--reveal-ease) var(--reveal-delay, 300ms) backwards;
+  /* O elemento em si não usa a entrada padrão: quem anima é a rota e o avião */
+  :global(.reveal-on) .sobre__aviao.is-visible {
+    animation: none;
   }
 
-  @keyframes trajeto {
+  :global(.reveal-on) .sobre__aviao:not(.is-visible) {
+    opacity: 1;
+  }
+
+  .voo__revela {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+
+  .voo__aviao {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* 1) a rota se desenha a partir do mapa; 2) o avião aparece no fim; 3) o ponto de partida pulsa devagar */
+  :global(.reveal-on) .sobre__aviao:not(.is-visible) .voo__revela {
+    stroke-dashoffset: 1;
+  }
+
+  :global(.reveal-on) .sobre__aviao:not(.is-visible) .voo__aviao {
+    opacity: 0;
+  }
+
+  :global(.reveal-on) .sobre__aviao.is-visible .voo__revela {
+    animation: voo-rota 1.6s var(--reveal-ease) 0.5s backwards;
+  }
+
+  :global(.reveal-on) .sobre__aviao.is-visible .voo__aviao {
+    animation: voo-chega 0.7s var(--reveal-ease) 1.85s backwards;
+  }
+
+  @keyframes voo-rota {
     from {
-      clip-path: inset(0 100% 0 0);
+      stroke-dashoffset: 1;
     }
-    to {
-      clip-path: inset(0 0 0 0);
+  }
+
+  @keyframes voo-chega {
+    from {
+      opacity: 0;
+      transform: translate(-30%, 30%) scale(0.6);
+    }
+  }
+
+  .voo__pulso {
+    transform-box: fill-box;
+    transform-origin: center;
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .voo__pulso {
+      animation: voo-pulso 2.8s ease-out infinite;
+    }
+  }
+
+  @keyframes voo-pulso {
+    0% {
+      opacity: 0.7;
+      transform: scale(0.6);
+    }
+    80%,
+    100% {
+      opacity: 0;
+      transform: scale(2.4);
     }
   }
 
@@ -470,6 +557,7 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
     .sobre__palco > * {
       position: absolute;
       margin: 0;
+      align-self: auto;
     }
 
     /* Foto 1: canto superior esquerdo, inteira (2:3) */
@@ -495,12 +583,15 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
       z-index: 1;
     }
 
-    /* Avião: no lugar das árvores, acima do vídeo */
+    /* Rota do voo: começa no marcador da Loft no mapa (x 51,9%, y 11,2% da largura do bloco)
+       e segue para cima e para a direita, no lugar das árvores da referência.
+       Caixa: x 50–100% e y −14% a +13% da largura (topo = −14/70 = −20% da altura do palco). */
     .sobre__aviao {
-      left: 66%;
-      top: -1%;
-      width: 32%;
-      z-index: 0;
+      left: 50%;
+      top: -20%;
+      width: 50%;
+      z-index: 3;
+      pointer-events: none;
     }
 
     /* Bisão: no lugar da coruja, no canto inferior esquerdo da foto 1 */
