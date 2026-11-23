@@ -47,7 +47,7 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
         fallbackFormat="jpg"
         quality={76}
         widths={[480, 720, 960]}
-        sizes="(min-width: 48rem) 25rem, 92vw"
+        sizes="(min-width: 48rem) 22rem, 92vw"
         loading="lazy"
       />
     </div>
@@ -87,7 +87,7 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
               width={480}
               height={854}
               widths={[320, 480]}
-              sizes="(min-width: 48rem) 22rem, 78vw"
+              sizes="(min-width: 48rem) 19rem, 64vw"
               loading="lazy"
               class="video-card__capa"
             />
@@ -210,18 +210,18 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
 
   .sobre__foto {
     grid-column: 1 / -1;
-    aspect-ratio: 291 / 196;
+    aspect-ratio: 1024 / 1536;
     border-radius: var(--r-lg);
     overflow: hidden;
     background: var(--color-surface-deep);
   }
 
   .sobre__foto :global(img) {
-    object-position: 50% 26%;
+    object-position: 50% 50%;
   }
 
   .sobre__mapa {
-    aspect-ratio: 188 / 194;
+    aspect-ratio: 1 / 1;
     border-radius: var(--r-md);
     overflow: hidden;
     border: 4px solid #fff;
@@ -265,30 +265,29 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
     }
   }
 
-  /* ---------- Vídeo (3:4, como a terceira foto da referência) ---------- */
+  /* ---------- Vídeo (proporção real, vertical) ---------- */
   /* Limpo, como as fotos da referência: só cantos arredondados, sem moldura de aparelho */
   .video-card {
     position: relative;
     grid-column: 1 / -1;
     justify-self: center;
-    width: min(78%, 22rem);
-    aspect-ratio: 3 / 4;
+    width: min(64%, 18rem);
+    aspect-ratio: 480 / 854;
     border-radius: var(--r-lg);
     overflow: hidden;
     background: var(--color-surface-deep);
     isolation: isolate;
   }
 
-  /* Capa e vídeo 20% mais largos e alinhados à direita: corta a parede/porta da esquerda */
+  /* Capa e vídeo na proporção real (480 × 854): aparecem inteiros */
   .video-card :global(.video-card__capa),
   .video-card__video {
     position: absolute;
-    top: 0;
-    right: 0;
-    width: 120%;
+    inset: 0;
+    width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: 50% 55%;
+    object-position: 50% 50%;
   }
 
   .video-card__video {
@@ -444,7 +443,7 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
      então a composição escala junto, sem colisões. Altura do palco = 417/660 da largura. */
   @media (min-width: 48rem) {
     .sobre__grid {
-      --bloco: min(100%, max(44rem, 54vw), 58rem);
+      --bloco: min(100%, max(46rem, 62vw), 64rem);
       width: var(--bloco);
       margin-left: max(0px, calc((100% - var(--bloco)) * 0.445));
       gap: 0;
@@ -465,7 +464,7 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
     .sobre__palco {
       display: block;
       position: relative;
-      aspect-ratio: 660 / 417;
+      aspect-ratio: 100 / 70;
     }
 
     .sobre__palco > * {
@@ -473,42 +472,42 @@ const videoSrc = url('/media/video/loft-experiencia-alunos.mp4');
       margin: 0;
     }
 
-    /* Foto 1: canto superior esquerdo (291 × 196) */
+    /* Foto 1: canto superior esquerdo, inteira (2:3) */
     .sobre__foto {
       left: 0;
       top: 0;
-      width: 44.1%;
+      width: 34%;
     }
 
-    /* Mapa: ao lado da foto (188 × 194), por cima do vídeo */
+    /* Mapa: ao lado da foto, inteiro (1:1), por cima do canto do vídeo */
     .sobre__mapa {
-      left: 45.5%;
+      left: 36%;
       top: 0;
-      width: 28.5%;
+      width: 26%;
       z-index: 2;
     }
 
-    /* Vídeo: terceira imagem, 3:4, mais baixa e parcialmente sob o mapa */
+    /* Vídeo: terceira imagem, inteira (480 × 854), mais baixa e com o canto sob o mapa */
     .video-card {
-      left: 60.3%;
-      top: 16.5%;
-      width: 39.7%;
+      left: 57%;
+      top: 23%;
+      width: 30%;
       z-index: 1;
     }
 
     /* Avião: no lugar das árvores, acima do vídeo */
     .sobre__aviao {
-      left: 74%;
-      top: -7%;
-      width: 26%;
+      left: 66%;
+      top: -1%;
+      width: 32%;
       z-index: 0;
     }
 
     /* Bisão: no lugar da coruja, no canto inferior esquerdo da foto 1 */
     .sobre__bisao {
-      left: -2.5%;
-      top: 33%;
-      width: 21%;
+      left: -4%;
+      top: 58%;
+      width: 20%;
       z-index: 3;
     }
 
